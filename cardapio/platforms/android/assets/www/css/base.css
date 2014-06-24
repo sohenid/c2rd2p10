@@ -1,0 +1,61 @@
+body {
+    padding: 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.debug {
+    display: none;
+}
+
+.debug > .btn-default {
+    border-color: red;
+}
+
+.main {
+    padding: 0 20px;
+}
+
+#output {
+    overflow-y: scroll;
+}
+
+#output > .thumbnail {
+    margin: 0;
+    margin-top: 20px;
+}
+
+#output > .thumbnail:last-child {
+    margin-bottom: 20px;
+}
+
+#menu {
+    display: none;
+    position: absolute;
+    top: 0;
+    background-color: #304859;
+}
+
+#menu > ul {
+    margin: 0;
+    padding: 0;
+}
+
+#menu > ul > li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+#menu > ul > li > a {
+    display: block;
+    padding: 17px 17px;
+    border-bottom: 1px solid #445a69;
+    color: #fff;
+}
+
+#menu > ul > li > a:hover {
+    text-decoration: none;
+}

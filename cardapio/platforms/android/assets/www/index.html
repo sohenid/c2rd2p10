@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <title>App</title>
+    </head>
+    <body style="background-color: #304859">
+        <a href="categoria-internos.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px">
+            <img src="img/logo.png">
+        </a>
+        <script type="text/javascript" src="cordova.js"></script>
+
+        <script type="text/javascript" src="js/functions.js"></script>
+        <script type="text/javascript" src="js/database.js"></script>
+        <script type="text/javascript">
+
+            document.addEventListener("deviceready", onDeviceReady, false);
+
+            function onDeviceReady() {
+                db.transaction(createTables, errorCallBack, setTableConfig);
+            }
+
+            function createTables(tx) {
+                tx.executeSql("CREATE TABLE IF NOT EXISTS Categoria(Id INTEGER NULL, Descricao TEXT NULL, Imagem TEXT NULL, Status TEXT NULL, DataInsert TEXT NULL, DataUpdate TEXT NULL)");
+                tx.executeSql("CREATE TABLE IF NOT EXISTS Produto(Id INTEGER NULL, CategoriaId INTEGER NULL, Descricao TEXT NULL, Preco TEXT NULL, Imagem TEXT NULL, Status TEXT NULL, DataInsert TEXT NULL, DataUpdate TEXT NULL)");
+                tx.executeSql("CREATE TABLE IF NOT EXISTS Config(Id INTEGER NULL, DeviceId Integer NULL)");
+            }
+
+            function setTableConfig() {
+                db.transaction(function(transaction) {
+                    transaction.executeSql('SELECT * FROM Config', [], function(transaction, result) {
+                        if (result.rows.length == 0) {
+                            transaction.executeSql('INSERT INTO Config(Id, DeviceId) VALUES (?,?)', ["1", "1"], nullCallBack, errorCallBack);
+                        }
+                    }, errorCallBack);
+                }, errorCallBack);
+            }
+
+        </script>
+    </body>
+</html>
