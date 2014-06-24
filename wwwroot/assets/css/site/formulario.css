@@ -1,0 +1,10 @@
+input.text { float:left; background:url(/img/site/bg-input.png) #FFF top repeat-x; width:96%; padding:8px 2%; border:1px solid #b4b4b4; font:13px Arial; color:#464545; }
+select.select { float:left; background-color:Transparent; background:url(/img/site/bg-input.png) #FFF top repeat-x; width:98%; height:33px; margin-top:2px; padding:8px 2%; font:13px Arial; color:#464545; border:1px solid #b4b4b4; }
+textarea { float:left; background:url(/img/site/bg-input.png) #FFF top repeat-x; width:96%; height:100px; padding:8px 2%; font:13px Arial; color:#464545; border:1px solid #b4b4b4; }
+
+input.text:focus, select.select:focus, textarea:focus { border:1px solid #dfdfdf; }
+input.text, select.select, textarea { -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px; }
+input.text, select.select, textarea { box-shadow:2px 2px 5px #eeeeee; -webkit-box-shadow:2px 2px 5px #eeeeee; -moz-box-shadow: 2px 2px 5px #eeeeee; }
+
+input.btn { text-indent:-9090px; line-height:0; cursor:pointer; border:0; }
+

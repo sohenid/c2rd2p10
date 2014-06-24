@@ -1,0 +1,10 @@
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;	
+	font-size: 13px;
+	color: #333;
+	line-height: 20px;
+	-webkit-text-size-adjust: none;
+	padding: 5px;
+}
+
+blockquote { margin-top:0px; margin-bottom:0px; }

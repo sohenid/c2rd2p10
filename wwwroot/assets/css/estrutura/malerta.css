@@ -1,0 +1,18 @@
+#form-alert{
+	position: fixed;
+	text-align: center;
+	top: 0;
+	width: 100%;
+	padding: 10px 0;
+	border-left: 0px;		
+	border-top: 0px;
+	border-right: 0px;
+	border-bottom: 1px groove;
+	border-radius: 0;
+	box-shadow: 0 0 5px 0 #ccc;
+	z-index: 1050;
+	overflow:hidden;
+        line-height: 20px;
+}
+#form-alert .close { right:20px; margin-top: 5px; position: absolute; }
+#form-alert i[class^="icon-"] { vertical-align: text-bottom; padding-right: 15px; padding-bottom: 2px; }

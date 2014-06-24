@@ -1,0 +1,88 @@
+<?php
+class Admix_Controller extends CI_Controller {
+    public function __construct(){
+        parent::__construct();
+        
+		$this->load->helper('wwwredirect_helper');
+		wwwRedirect();
+
+		$this->load->model('usuarios_m', 'usuarios');
+		$this->usuarios->autenticado();
+			
+		$this->msmarty->assign('malerta', $this->session->flashdata('malerta'));
+    }
+    
+	public function setPagina($pagina, $dados){
+		$usuarioId = $this->session->userdata('varUsuario_Id');
+		
+		$this->config->load('admix');
+		
+		$this->msmarty->assign('siteNome', $this->config->item('site_nome'));
+		
+		$this->msmarty->assign('usuarioId', $this->session->userdata('varUsuario_Id'));
+		$this->msmarty->assign('usuarioNome', $this->session->userdata('varUsuario_Nome'));
+		$this->msmarty->assign('usuarioAvatar',	$this->usuarios->getAvatar($usuarioId));
+		
+		$url_retorno = ($this->input->get_post('url_retorno')) ? urlencode($this->input->get_post('url_retorno')) : urlencode("?".$_SERVER["QUERY_STRING"]);
+		$this->msmarty->assign('url_retorno', $url_retorno);
+		
+		$print = $this->input->get('print') ? true : false;
+		$this->msmarty->assign('print', $print);
+		
+		$this->msmarty->assign($dados);
+		$ir = $this->msmarty->fetch('admix/'.$pagina);
+		$this->msmarty->assign('ir', $ir);
+		$this->msmarty->display('admix/index.tpl');
+	}    
+}
+
+class Site_Controller extends CI_Controller {
+    public function __construct(){
+        parent::__construct();
+
+		$this->load->helper('wwwredirect_helper');
+		wwwRedirect();
+
+		$this->load->model('banners_m', 'banners');
+		$this->load->model('configuracoes_m', 'configuracoes');
+
+		$this->msmarty->assign('malerta', $this->session->flashdata('malerta'));
+    }
+    
+	public function setPagina($pagina, $dados){
+
+		/* banners */
+		$banners = $this->banners->getBannersPorLocalizacao(1);
+		
+		$this->msmarty->assign('banners', $banners['result']);
+
+		/* Configurações */
+		$configuracoes = $this->configuracoes->getConfiguracoesValores();
+				
+		$this->msmarty->assign('analytics', $configuracoes['Google_Analytics']);
+				
+		$this->msmarty->assign($dados);
+		$ir = $this->msmarty->fetch('site/'.$pagina);
+		$this->msmarty->assign('ir', $ir);
+		
+		#$this->msmarty->loadFilter('output', 'group_css');
+		#$this->msmarty->loadFilter('output', 'group_js');
+		#$this->msmarty->loadFilter('output', 'minify');
+				
+		$this->msmarty->display('site/index.tpl');
+	}
+
+	protected function validaForm()
+	{
+		if (!$this->input->post('AcaoComplemento', true) || !($this->input->post('AcaoComplemento', true) < 100 && $this->input->post('AcaoComplemento', true) > 0)) {
+					
+			return false;
+				
+		}else{
+
+			return true;
+
+		}
+	}    
+}
+?>

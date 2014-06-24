@@ -1,0 +1,11 @@
+.f12 { font-size: 0.750em; /*12px;*/ }
+.f16 { font-size: 1.000em; /*16px;*/ }
+.f24 { font-size: 1.500em; /*24px;*/ }
+.f32 { font-size: 2.000em; /*32px;*/ }
+.f48 { font-size: 3.000em; /*48px;*/ }
+.f64 { font-size: 4.000em; /*64px;*/ }
+.f128 { font-size: 8.000em; /*128px;*/ }
+.f256 { font-size: 16.000em; /*256px;*/ }
+.f512 { font-size: 32.000em; /*512px;*/ }
+
+[class^="icon-"].default { color: #333333; text-decoration: none; }

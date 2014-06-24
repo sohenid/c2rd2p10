@@ -1,0 +1,51 @@
+@charset "UTF-8";
+/****************************************************  
+	CSS GERAL 
+****************************************************/
+
+/*** 
+	GERAL 
+***/
+***/
+body { font:12px Arial, Helvetica, sans-serif; }
+
+.clear-fix:after { content:" "; display:block; clear:both; }
+.conteudo { display:table; background:#FFF; width:964px; margin:0 auto; padding:20px; }
+.conteudo strong { font-weight:800; }
+
+a { color:#; text-decoration:none; margin:0; padding:0; border:0; background:transparent; transition:.2s; }
+a:hover { color:#!important; text-decoration:none !important; transition:.1s; }
+a:hover h1, a:hover h2, a:hover h3, a:hover h4 { transition:.1s; }
+
+input:focus { box-shadow:#; }
+
+.text-truncate { display:block; text-overflow:ellipsis; white-space:nowrap; overflow:hidden; }
+
+img { float:left; }
+
+
+/*** 
+	TOPO 
+***/
+.topo {
+	
+}
+
+
+
+
+/*** 
+	CONTEÚDO PRINCIPAL 
+***/
+.conteudo-geral {  }
+.conteudo-geral .conteudo {  }
+.conteudo-geral .conteudo main {  }
+
+
+
+
+/*** 
+	RODAPÉ
+***/
+.rodape { }
+.rodape .conteudo { }

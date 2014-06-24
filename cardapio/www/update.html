@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=yes, initial-scale=1.5, maximum-scale=1.5, minimum-scale=1.5, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <title>App</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/base.css" />
+    </head>
+    <body>
+
+        <div id="menu">
+            <ul>
+                <li><a href="update-login.html"><span class="glyphicon glyphicon-repeat"></span> Atualizar</a></li>
+                <li><a href="config-login.html"><span class="glyphicon glyphicon-cog"></span> Configurar</a></li>
+                <li><a href="#" onclick="exit()"><span class="glyphicon glyphicon-off"></span> Fechar</a></li>
+            </ul>
+        </div>
+
+        <div class="clearfix" style="padding: 10px 20px; border-bottom: 1px solid #eee">
+            <a href="categoria-internos.html" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></a>
+            <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
+        </div>
+
+        <div class="main">
+            <div id="output">
+                <div id="alert-log" style="margin-top: 20px"></div>
+                <div id="alert-log-categoria"></div>
+                <div id="alert-log-produto"></div>
+                <div id="loader" style="text-align: center; display: none; position: absolute; border: 1px solid #eee; border-radius: 4px; padding: 20px; top:50%; left: 50%; margin-top: -28px; margin-left: -28px; background-color: #fff"><img src="img/ajax-loader.gif"></div>
+                <a href="update.html" style="margin-top: 20px; display: none" class="btn btn-default btn-block" id="btn-refresh-page"><span class="glyphicon glyphicon-refresh"></span> Tentar novamente</a>
+            </div>
+        </div>
+
+
+        <script src="cordova.js"></script>
+        <script src="js/jquery.min.js"></script>
+
+        <script src="js/base.js"></script>
+
+        <script src="js/functions.js"></script>
+        <script src="js/database.js"></script>
+        <script src="js/helper-record.js"></script>
+
+        <script>
+
+                    $('#output').css('height', vWindowHeight - 55);
+
+                    document.addEventListener("deviceready", onDeviceReady, false);
+
+                    function onDeviceReady() {
+                        if (connectionChecker()) {
+                            $('#alert-log').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">Acesso a internet identificado! <a onclick="connectionDescription()" class="pull-right" style="margin-top: 1px; display: inline-block"><span class="glyphicon glyphicon-info-sign"></span></a></div>');
+                            getCategoriaUpdatesRecords();
+                        } else {
+                            $('#alert-log').append('<div class="alert alert-danger" style="padding: 5px 10px; margin-bottom: 20px">Acesso a internet não identificado! <a onclick="connectionDescription()" class="pull-right" style="margin-top: 1px; display: inline-block"><span class="glyphicon glyphicon-info-sign"></span></a></div>');
+                            $('#btn-refresh-page').css({display: "block"});
+                        }
+                    }
+
+                    function getCategoriaUpdatesRecords() {
+                        db.transaction(function(transaction) {
+                            transaction.executeSql("SELECT MAX(DataUpdate) as DataUpdate, MAX(Id) as Id FROM Categoria", [], function(transaction, result) {
+                                $('#alert-log-categoria').append('<h3>Categorias...</h3>');
+                                $.ajax({
+                                    url: BASE_URL + 'jsonp/categoriasupdates/data_update/' + (result.rows.item(0)['DataUpdate'] != null ? result.rows.item(0)['DataUpdate'] : '0') + '/id/' + (result.rows.item(0)['Id'] != null ? result.rows.item(0)['Id'] : '0'),
+                                    dataType: 'jsonp',
+                                    jsonp: 'jsoncallback',
+                                    timeout: 10000,
+                                    success: function(data, status) {
+                                        if (data.length == 0) {
+                                            $('#alert-log-categoria').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Nenhuma atualização de categoria encontrada.</div>');
+                                        } else {
+                                            $('#alert-log-categoria').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">' + (data.length > 1 ? data.length + ' atualizações de categorias encontradas' : data.length + ' atualização de categoria encontrada') + '!</div>');
+                                            $('#alert-log-categoria').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Atualizando categorias...');
+                                            db.transaction(function(transaction) {
+                                                $.each(data, function(i, item) {
+                                                    if (result.rows.item(0)['Id'] == null) {
+                                                        transaction.executeSql('INSERT INTO Categoria (Id, Descricao, Imagem, Status, DataInsert, DataUpdate) VALUES (?,?,?,?,?,?)', [item.id, item.descricao, item.imagem_base_64, item.status, item.data_insert, item.data_update]);
+                                                    } else {
+                                                        transaction.executeSql('UPDATE Categoria SET Id = ?, Descricao = ?, Imagem = ?, Status = ?, DataInsert = ?, DataUpdate = ? WHERE Id = ?', [item.id, item.descricao, item.imagem_base_64, item.status, item.data_insert, item.data_update, item.id]);
+                                                    }
+                                                });
+                                            }, errorCallBack, function() {
+                                                $('#alert-log-categoria').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">Atualizações de categorias registradas!</div>');
+                                            });
+                                        }
+                                        getCategoriaNewsRecords();
+                                    },
+                                    beforeSend: function() {
+                                        $('#loader').css({display: "block"});
+                                    },
+                                    complete: function() {
+                                        $('#loader').css({display: "none"});
+                                    },
+                                    error: function() {
+                                        $('#alert-log-categoria').append('<div class="alert alert-danger" style="padding: 5px 10px; margin-bottom: 20px">Erro ao verificar categorias. Verifique a conexão e tente novamente.</div>');
+                                        $('#btn-refresh-page').css({display: "block"});
+                                    }
+                                });
+                            }, errorCallBack);
+                        }, errorCallBack, nullCallBack);
+                    }
+
+                    function getCategoriaNewsRecords() {
+                        db.transaction(function(transaction) {
+                            transaction.executeSql("SELECT MAX(Id) as Id FROM Categoria", [], function(transaction, result) {
+                                if (result.rows.item(0)['Id'] != null) {
+                                    $.ajax({
+                                        url: BASE_URL + 'jsonp/categoriasnews/id/' + result.rows.item(0)['Id'],
+                                        dataType: 'jsonp',
+                                        jsonp: 'jsoncallback',
+                                        timeout: 10000,
+                                        success: function(data, status) {
+                                            if (data.length == 0) {
+                                                $('#alert-log-categoria').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Nenhum cadastro de categoria encontrado.</div>');
+                                            } else {
+                                                $('#alert-log-categoria').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">' + (data.length > 1 ? data.length + ' cadastros de categorias encontrados' : data.length + ' cadastro de categoria encontrado') + '!</div>');
+                                                $('#alert-log-categoria').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Registrando categorias...</div>');
+                                                db.transaction(function(transaction) {
+                                                    $.each(data, function(i, item) {
+                                                        transaction.executeSql('INSERT INTO Categoria (Id, Descricao, Imagem, Status, DataInsert, DataUpdate) VALUES (?,?,?,?,?,?)', [item.id, item.descricao, item.imagem_base_64, item.status, item.data_insert, item.data_update]);
+                                                    });
+                                                }, errorCallBack, function() {
+                                                    $('#alert-log-categoria').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">Cadastros de categorias registrados!</div>');
+                                                });
+                                            }
+                                            getProdutoUpdatesRecords();
+                                        },
+                                        beforeSend: function() {
+                                            $('#loader').css({display: "block"});
+                                        },
+                                        complete: function() {
+                                            $('#loader').css({display: "none"});
+                                        },
+                                        error: function() {
+                                            $('#alert-log-categoria').append('<div class="alert alert-danger" style="padding: 5px 10px; margin-bottom: 20px">Erro ao verificar categorias. Verifique a conexão e tente novamente.</div>');
+                                            $('#btn-refresh-page').css({display: "block"});
+                                        }
+                                    });
+                                } else {
+                                }
+                            }, errorCallBack);
+                        }, errorCallBack, nullCallBack);
+                    }
+
+                    function getProdutoUpdatesRecords() {
+                        db.transaction(function(transaction) {
+                            transaction.executeSql("SELECT MAX(DataUpdate) as DataUpdate, MAX(Id) as Id FROM Produto", [], function(transaction, result) {
+                                $('#alert-log-produto').append('<h3>Produtos...</h3>');
+                                $.ajax({
+                                    url: BASE_URL + 'jsonp/produtosupdates/data_update/' + (result.rows.item(0)['DataUpdate'] != null ? result.rows.item(0)['DataUpdate'] : '0') + '/id/' + (result.rows.item(0)['Id'] != null ? result.rows.item(0)['Id'] : '0'),
+                                    dataType: 'jsonp',
+                                    jsonp: 'jsoncallback',
+                                    timeout: 10000,
+                                    success: function(data, status) {
+                                        if (data.length == 0) {
+                                            $('#alert-log-produto').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Nenhuma atualização de produto encontrada.</div>');
+                                        } else {
+                                            $('#alert-log-produto').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">' + (data.length > 1 ? data.length + ' atualizações de produtos encontradas' : data.length + ' atualização de produto encontrada') + '!</div>');
+                                            $('#alert-log-produto').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Atualizando produtos...');
+                                            db.transaction(function(transaction) {
+                                                $.each(data, function(i, item) {
+                                                    if (result.rows.item(0)['Id'] == null) {
+                                                        transaction.executeSql('INSERT INTO Produto (Id, CategoriaId, Descricao, Preco, Imagem, Status, DataInsert, DataUpdate) VALUES (?,?,?,?,?,?,?,?)', [item.id, item.categoria_id, item.descricao, item.preco, item.imagem_base_64, item.status, item.data_insert, item.data_update]);
+                                                    } else {
+                                                        transaction.executeSql('UPDATE Produto SET Id = ?, CategoriaId = ?, Descricao = ?, Preco = ?, Imagem = ?, Status = ?, DataInsert = ?, DataUpdate = ? WHERE Id = ?', [item.id, item.categoria_id, item.descricao, item.preco, item.imagem_base_64, item.status, item.data_insert, item.data_update, item.id]);
+                                                    }
+                                                });
+                                            }, errorCallBack, function() {
+                                                $('#alert-log-produto').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">Atualizações de produto registradas!</div>');
+                                            });
+                                        }
+                                        getProdutoNewsRecords();
+                                    },
+                                    beforeSend: function() {
+                                        $('#loader').css({display: "block"});
+                                    },
+                                    complete: function() {
+                                        $('#loader').css({display: "none"});
+                                    },
+                                    error: function() {
+                                        $('#alert-log-produto').append('<div class="alert alert-danger" style="padding: 5px 10px; margin-bottom: 20px">Erro ao verificar produtos. Verifique a conexão e tente novamente.</div>');
+                                        $('#btn-refresh-page').css({display: "block"});
+                                    }
+                                });
+                            }, errorCallBack);
+                        }, errorCallBack, nullCallBack);
+                    }
+
+                    function getProdutoNewsRecords() {
+                        db.transaction(function(transaction) {
+                            transaction.executeSql("SELECT MAX(Id) as Id FROM Produto", [], function(transaction, result) {
+                                if (result.rows.item(0)['Id'] != null) {
+                                    $.ajax({
+                                        url: BASE_URL + 'jsonp/produtosnews/id/' + result.rows.item(0)['Id'],
+                                        dataType: 'jsonp',
+                                        jsonp: 'jsoncallback',
+                                        timeout: 10000,
+                                        success: function(data, status) {
+                                            if (data.length == 0) {
+                                                $('#alert-log-produto').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Nenhum cadastro de produto encontrado.</div>');
+                                            } else {
+                                                $('#alert-log-produto').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">' + (data.length > 1 ? data.length + ' cadastros de produtos encontrados' : data.length + ' cadastro de produto encontrado') + '!</div>');
+                                                $('#alert-log-produto').append('<div class="alert alert-warning" style="padding: 5px 10px; margin-bottom: 20px">Registrando produtos...</div>');
+                                                db.transaction(function(transaction) {
+                                                    $.each(data, function(i, item) {
+                                                        transaction.executeSql('INSERT INTO Produto (Id, CategoriaId, Descricao, Preco, Imagem, Status, DataInsert, DataUpdate) VALUES (?,?,?,?,?,?,?,?)', [item.id, item.categoria_id, item.descricao, item.preco, item.imagem_base_64, item.status, item.data_insert, item.data_update]);
+                                                    });
+                                                }, errorCallBack, function() {
+                                                    $('#alert-log-produto').append('<div class="alert alert-success" style="padding: 5px 10px; margin-bottom: 20px">Cadastros de produtos registrados!</div>');
+                                                });
+                                            }
+                                        },
+                                        beforeSend: function() {
+                                            $('#loader').css({display: "block"});
+                                        },
+                                        complete: function() {
+                                            $('#loader').css({display: "none"});
+                                        },
+                                        error: function() {
+                                            $('#alert-log-produto').append('<div class="alert alert-danger" style="padding: 5px 10px; margin-bottom: 20px">Erro ao verificar produtos. Verifique a conexão e tente novamente.</div>');
+                                            $('#btn-refresh-page').css({display: "block"});
+                                        }
+                                    });
+                                } else {
+                                }
+                            }, errorCallBack);
+                        }, errorCallBack, nullCallBack);
+                    }
+
+                    function connectionChecker() {
+                        var networkState = navigator.connection.type;
+                        var states = {};
+                        states[Connection.UNKNOWN] = true;
+                        states[Connection.ETHERNET] = true;
+                        states[Connection.WIFI] = true;
+                        states[Connection.CELL_2G] = true;
+                        states[Connection.CELL_3G] = true;
+                        states[Connection.CELL_4G] = true;
+                        states[Connection.CELL] = true;
+                        states[Connection.NONE] = false;
+                        return states[networkState];
+                    }
+
+                    function connectionDescription() {
+                        var networkState = navigator.connection.type;
+                        var states = {};
+                        states[Connection.UNKNOWN] = 'Conexão desconhecida';
+                        states[Connection.ETHERNET] = 'Conexão Ethernet';
+                        states[Connection.WIFI] = 'Conexão WiFi';
+                        states[Connection.CELL_2G] = 'Conexão 2G';
+                        states[Connection.CELL_3G] = 'Conexão 3G';
+                        states[Connection.CELL_4G] = 'Conexão 4G';
+                        states[Connection.CELL] = 'Conexão genérica de celular';
+                        states[Connection.NONE] = 'Conexão não encontrada';
+                        alert(states[networkState]);
+                    }
+
+        </script>
+    </body>
+</html>
