@@ -69,6 +69,9 @@
                             list = list + '<div>';
                             list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
                             list = list + '</div>';
+                            list = list + '<div class="x-pedido">';
+                            list = list + '<a href="adicionar-produto.html?id=' + row.Id + '" class="btn btn-danger btn-block" style="margin-top: 20px"><span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao carrinho</a>';
+                            list = list + '</div>';
                             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                             list = list + '<div class="debug" style="margin-top: 20px"><a href="produto-edicao.html?id=' + row.Id + '" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pencil"></span></a></div>';
                             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

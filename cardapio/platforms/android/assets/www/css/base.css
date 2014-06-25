@@ -59,3 +59,7 @@ body {
 #menu > ul > li > a:hover {
     text-decoration: none;
 }
+
+.x-pedido {
+    display: block;
+}

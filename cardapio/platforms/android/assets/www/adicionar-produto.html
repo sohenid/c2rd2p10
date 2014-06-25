@@ -20,7 +20,6 @@
         </div>
 
         <div class="clearfix" style="padding: 10px 20px; border-bottom: 1px solid #eee">
-            <a href="categoria-internos.html" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></a>
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
         </div>
 
@@ -44,7 +43,6 @@
                 $('#output').css('height', vWindowHeight - 110);
 
                 document.addEventListener("deviceready", onDeviceReady, false);
-
                 function onDeviceReady() {
 
 
@@ -52,8 +50,8 @@
                 }
 
                 function getRecords(tx) {
-                    var vCategoriaId = _GET('categoria');
-                    tx.executeSql("SELECT * FROM Produto WHERE Status = '1' and CategoriaId = ? ORDER BY Descricao ASC", [vCategoriaId], showRecords, errorCallBack);
+                    var vId = _GET('id');
+                    tx.executeSql("SELECT * FROM Produto WHERE Id = ?", [vId], showRecords, errorCallBack);
                 }
 
                 function showRecords(tx, result) {
@@ -64,13 +62,49 @@
                         for (var i = 0; i < result.rows.length; i++) {
                             var row = result.rows.item(i);
                             list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
-                            list = list + '<h1>' + row.Descricao + '</h1>';
-                            list = list + '<h2 class="text-danger">R$ ' + row.Preco + '</h2>';
                             list = list + '<div>';
                             list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
                             list = list + '</div>';
                             list = list + '<div class="x-pedido">';
-                            list = list + '<a href="adicionar-produto.html?id=' + row.Id + '" class="btn btn-danger btn-block" style="margin-top: 20px"><span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao carrinho</a>';
+
+                            /**/list = list + '<div style="margin-bottom: 20px;">';
+                            /****/list = list + '<strong>' + row.Descricao + '</strong>';
+                            /**/list = list + '</div>';
+
+                            /**/list = list + '<div style="text-align: center; margin-bottom: 20px">';
+                            /****/list = list + 'Valor unitário<br>';
+                            /****/list = list + 'R$ ' + row.Preco;
+                            /**/list = list + '</div>';
+
+                            /**/list = list + '<div style="overflow: auto">';
+                            /****/list = list + '<div style="width: 33%; float: left">';
+                            /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-minus"></span></button>';
+                            /****/list = list + '</div>';
+                            /****/list = list + '<div style="text-align: center; width: 34%; float: left">';
+                            /******/list = list + '<input type="text" class="form-control" style="text-align: center" value="1" readonly>';
+                            /****/list = list + '</div>';
+                            /****/list = list + '<div style="width: 33%; float: left">';
+                            /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span></button>';
+                            /****/list = list + '</div>';
+                            /**/list = list + '</div>';
+
+                            /**/list = list + '<div style="margin-top: 20px;">';
+                            /****/list = list + 'Total<br>';
+                            /****/list = list + '<span class="text-success">R$ 45.00</span>';
+                            /**/list = list + '</div>';
+
+                            /**/list = list + '<div style="margin-top: 20px;">';
+                            /****/list = list + '<textarea class="form-control" rows="2" placeholder="Observações..."></textarea>';
+                            /**/list = list + '</div>';
+
+                            /**/list = list + '<div style="margin-top: 20px;">';
+                            /****/list = list + '<a href="carrinho.html" class="btn btn-success btn-block"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
+                            /**/list = list + '</div>';
+                            
+                            /**/list = list + '<div style="margin-top: 20px;">';
+                            /****/list = list + '<a href="#" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                            /**/list = list + '</div>';
+
                             list = list + '</div>';
                             // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                             list = list + '<div class="debug" style="margin-top: 20px"><a href="produto-edicao.html?id=' + row.Id + '" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pencil"></span></a></div>';
@@ -107,12 +141,10 @@
                 }
 
                 function del(id) {
-
                     db.transaction(function(transaction) {
                         transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
                     }, errorCallBack, pageReload);
                 }
-
 
                 function deleteProdutoRecords() {
                     db.transaction(function(transaction) {
@@ -127,7 +159,6 @@
                 function _GET(param) {
                     var url = window.location.search.replace("?", "");
                     var itens = url.split("&");
-
                     for (n in itens)
                     {
                         if (itens[n].match(param))
