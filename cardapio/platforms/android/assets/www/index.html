@@ -27,6 +27,8 @@
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Categoria(Id INTEGER NULL, Descricao TEXT NULL, Imagem TEXT NULL, Status TEXT NULL, DataInsert TEXT NULL, DataUpdate TEXT NULL)");
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Produto(Id INTEGER NULL, CategoriaId INTEGER NULL, Descricao TEXT NULL, Preco TEXT NULL, Imagem TEXT NULL, Status TEXT NULL, DataInsert TEXT NULL, DataUpdate TEXT NULL)");
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Config(Id INTEGER NULL, DeviceId Integer NULL)");
+                tx.executeSql("CREATE TABLE IF NOT EXISTS Pedido (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, Status TEXT NULL, DataInsert TEXT NULL, DataUpdate TEXT NULL)");
+                tx.executeSql("CREATE TABLE IF NOT EXISTS PedidoProduto (PedidoId INTEGER NULL, ProdutoId INTEGER NULL, ValorUnitario TEXT NULL, Quantidade TEXT NULL, ValorTotal TEXT NULL, DataInsert TEXT NULL)");
             }
 
             function setTableConfig() {
