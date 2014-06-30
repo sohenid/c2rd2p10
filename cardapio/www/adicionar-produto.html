@@ -100,7 +100,7 @@
                             /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-minus"></span></button>';
                             /****/list = list + '</div>';
                             /****/list = list + '<div style="text-align: center; width: 34%; float: left">';
-                            /******/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center" value="2" readonly>';
+                            /******/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center" value="2">';
                             /****/list = list + '</div>';
                             /****/list = list + '<div style="width: 33%; float: left">';
                             /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span></button>';
@@ -110,7 +110,7 @@
                             /**/list = list + '<div style="margin-top: 20px;">';
                             /****/list = list + 'Total<br>';
                             /****/list = list + '<span class="text-success">'
-                            /******/list = list + parseFloat($('#quantidade').val() * row.Preco).toFixed(2);
+                            /******/list = list + $('#quantidade').val();
                             /****/list = list + '</span>';
                             /**/list = list + '</div>';
 
