@@ -13,6 +13,7 @@
 
         <div id="menu">
             <ul>
+                <li><a href="categorias.html"><span class="glyphicon glyphicon-th-large"></span> Cardápio</a></li>
                 <li><a href="update-login.html"><span class="glyphicon glyphicon-repeat"></span> Atualizar</a></li>
                 <li><a href="config-login.html"><span class="glyphicon glyphicon-cog"></span> Configurar</a></li>
                 <li><a href="#" onclick="exit()"><span class="glyphicon glyphicon-off"></span> Fechar</a></li>
@@ -61,12 +62,12 @@
                             var row = result.rows.item(i);
                             list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
                             list = list + '<h1>';
-                            list = list + '<a href="produto-internos.html?categoria=' + row.Id + '" style="text-decoration: none; color: #000">';
+                            list = list + '<a href="produtos.html?categoria=' + row.Id + '" style="text-decoration: none; color: #000">';
                             list = list + row.Descricao;
                             list = list + '</a>';
                             list = list + '</h1>';
                             list = list + '<div>';
-                            list = list + '<a href="produto-internos.html?categoria=' + row.Id + '">';
+                            list = list + '<a href="produtos.html?categoria=' + row.Id + '">';
                             list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
                             list = list + '</a>';
                             list = list + '</div>';
@@ -119,7 +120,7 @@
                 }
 
                 function pageReload() {
-                    location.href = 'categoria-internos.html';
+                    location.href = 'categorias.html';
                 }
 
         </script>
