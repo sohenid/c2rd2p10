@@ -8,11 +8,26 @@
         <title>App</title>
         <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
         <link rel="stylesheet" type="text/css" href="css/base.css" />
+        <script>
+            function _GET(param) {
+                var url = window.location.search.replace("?", "");
+                var itens = url.split("&");
+                for (n in itens)
+                {
+                    if (itens[n].match(param))
+                    {
+                        return decodeURIComponent(itens[n].replace(param + "=", ""));
+                    }
+                }
+                return null;
+            }
+        </script>
     </head>
     <body>
 
         <div id="menu">
             <ul>
+                <li><a href="categorias.html"><span class="glyphicon glyphicon-th-large"></span> Cardápio</a></li>
                 <li><a href="update-login.html"><span class="glyphicon glyphicon-repeat"></span> Atualizar</a></li>
                 <li><a href="config-login.html"><span class="glyphicon glyphicon-cog"></span> Configurar</a></li>
                 <li><a href="#" onclick="exit()"><span class="glyphicon glyphicon-off"></span> Fechar</a></li>
@@ -20,6 +35,10 @@
         </div>
 
         <div class="clearfix" style="padding: 10px 20px; border-bottom: 1px solid #eee">
+            <script>
+                var vCategoriaId = _GET('categoria');
+                document.write('<a href="produtos.html?categoria=' + vCategoriaId + '" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></a>');
+            </script>
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
         </div>
 
@@ -81,7 +100,7 @@
                             /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-minus"></span></button>';
                             /****/list = list + '</div>';
                             /****/list = list + '<div style="text-align: center; width: 34%; float: left">';
-                            /******/list = list + '<input type="text" class="form-control" style="text-align: center" value="1" readonly>';
+                            /******/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center" value="2" readonly>';
                             /****/list = list + '</div>';
                             /****/list = list + '<div style="width: 33%; float: left">';
                             /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span></button>';
@@ -90,7 +109,9 @@
 
                             /**/list = list + '<div style="margin-top: 20px;">';
                             /****/list = list + 'Total<br>';
-                            /****/list = list + '<span class="text-success">R$ 45.00</span>';
+                            /****/list = list + '<span class="text-success">'
+                            /******/list = list + parseFloat($('#quantidade').val() * row.Preco).toFixed(2);
+                            /****/list = list + '</span>';
                             /**/list = list + '</div>';
 
                             /**/list = list + '<div style="margin-top: 20px;">';
@@ -100,7 +121,7 @@
                             /**/list = list + '<div style="margin-top: 20px;">';
                             /****/list = list + '<a href="carrinho.html" class="btn btn-success btn-block"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
                             /**/list = list + '</div>';
-                            
+
                             /**/list = list + '<div style="margin-top: 20px;">';
                             /****/list = list + '<a href="#" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
                             /**/list = list + '</div>';
@@ -153,20 +174,7 @@
                 }
 
                 function pageReload() {
-                    location.href = 'produto-internos.html';
-                }
-
-                function _GET(param) {
-                    var url = window.location.search.replace("?", "");
-                    var itens = url.split("&");
-                    for (n in itens)
-                    {
-                        if (itens[n].match(param))
-                        {
-                            return decodeURIComponent(itens[n].replace(param + "=", ""));
-                        }
-                    }
-                    return null;
+                    location.href = 'produtos.html';
                 }
 
         </script>
