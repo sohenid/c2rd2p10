@@ -42,7 +42,7 @@
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
         </div>
 
-        <div style="padding: 10px 20px; border-bottom: 1px solid #eee">
+        <div style="padding: 10px 20px; border-bottom: 1px solid #eee;">
             <button class="btn btn-danger btn-block" onclick="callWaiter()"><span class="glyphicon glyphicon-bell"></span> Chamar Garçon</button>
         </div>
 
@@ -63,7 +63,6 @@
 
                 document.addEventListener("deviceready", onDeviceReady, false);
                 function onDeviceReady() {
-
 
                     db.transaction(getRecords, errorCallBack, successCallBack);
                 }
@@ -91,27 +90,31 @@
                             /**/list = list + '</div>';
 
                             /**/list = list + '<div style="text-align: center; margin-bottom: 20px">';
-                            /****/list = list + 'Valor unitário<br>';
-                            /****/list = list + 'R$ ' + row.Preco;
+                            /****/list = list + 'Valor unitário<br>R$ ';
+                            /****/list = list + '<span id="valor-unitario">';
+                            /******/list = list + row.Preco;
+                            /****/list = list + '</span>';
                             /**/list = list + '</div>';
 
                             /**/list = list + '<div style="overflow: auto">';
                             /****/list = list + '<div style="width: 33%; float: left">';
-                            /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-minus"></span></button>';
+                            /******/list = list + '<button id="menos" type="button" class="btn btn-default btn-block" onclick="quantidadeDown()" style="border-top-right-radius: 0; border-bottom-right-radius: 0" disabled="disabled"><span class="glyphicon glyphicon-minus"></span></button>';
                             /****/list = list + '</div>';
-                            /****/list = list + '<div style="text-align: center; width: 34%; float: left">';
-                            /******/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center" value="2">';
+                            /****/list = list + '<div style="text-align: center; width: 34%; float: left; margin-left: -1px; margin-right: -1px;">';
+                            /******/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center; border-radius: 0;" value="1">';
                             /****/list = list + '</div>';
                             /****/list = list + '<div style="width: 33%; float: left">';
-                            /******/list = list + '<button type="button" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span></button>';
+                            /******/list = list + '<button id="mais" type="button" class="btn btn-default btn-block" onclick="quantidadeUp()" style="border-top-left-radius: 0; border-bottom-left-radius: 0"><span class="glyphicon glyphicon-plus"></span></button>';
                             /****/list = list + '</div>';
                             /**/list = list + '</div>';
 
                             /**/list = list + '<div style="margin-top: 20px;">';
                             /****/list = list + 'Total<br>';
-                            /****/list = list + '<span class="text-success">'
-                            /******/list = list + $('#quantidade').val();
-                            /****/list = list + '</span>';
+                            /****/list = list + '<div class="text-success">R$ ';
+                            /******/list = list + '<span id="total">';
+                            /********/list = list + row.Preco;
+                            /******/list = list + '</span>';
+                            /**/list = list + '</div>';
                             /**/list = list + '</div>';
 
                             /**/list = list + '<div style="margin-top: 20px;">';
@@ -159,6 +162,28 @@
                         list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
                     }
                     output.innerHTML = list;
+                }
+
+                function quantidadeUp() {
+                    var vValorUnitario = parseFloat($('#valor-unitario').text());
+                    var vQuantidade = parseInt($('#quantidade').val());
+                    vQuantidade += 1;
+                    $('#quantidade').val(vQuantidade);
+                    $('#menos').removeAttr('disabled');
+                    $('#total').html((vQuantidade * vValorUnitario).toFixed(2));
+                }
+
+                function quantidadeDown() {
+                    var vValorUnitario = parseFloat($('#valor-unitario').text());
+                    if ($('#quantidade').val() > 1) {
+                        var vQuantidade = parseInt($('#quantidade').val());
+                        vQuantidade -= 1;
+                        $('#quantidade').val(vQuantidade);
+                        $('#total').html((vQuantidade * vValorUnitario).toFixed(2));
+                        if ($('#quantidade').val() == 1) {
+                            $('#menos').attr('disabled', 'disabled');
+                        }
+                    }
                 }
 
                 function del(id) {
