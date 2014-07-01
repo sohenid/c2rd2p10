@@ -78,87 +78,67 @@
                     if (result.rows.length > 0) {
                         list = list + '<div class="debug" style="margin-bottom: 20px"><button class="btn btn-default btn-block" onclick="deleteProdutoRecords()"><span class="glyphicon glyphicon-trash"></span> Limpar registros</button></div>';
                         for (var i = 0; i < result.rows.length; i++) {
+
                             var row = result.rows.item(i);
+
                             list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
-                            list = list + '<div>';
-                            list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
-                            list = list + '</div>';
-                            list = list + '<div class="x-pedido">';
 
-                            /**/list = list + '<div style="margin-bottom: 20px;">';
-                            /****/list = list + '<strong>' + row.Descricao + '</strong>';
+                            /**/list = list + '<div>';
+                            /****/list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
                             /**/list = list + '</div>';
 
-                            /**/list = list + '<div style="text-align: center; margin-bottom: 20px">';
-                            /****/list = list + 'Valor unitário<br>R$ ';
-                            /****/list = list + '<span id="valor-unitario">';
-                            /******/list = list + row.Preco;
-                            /****/list = list + '</span>';
-                            /**/list = list + '</div>';
+                            /**/list = list + '<div class="x-pedido">';
 
-                            /**/list = list + '<div style="overflow: auto">';
-                            /****/list = list + '<div style="width: 33%; float: left">';
-                            /******/list = list + '<button id="menos" type="button" class="btn btn-default btn-block" onclick="quantidadeDown()" style="border-top-right-radius: 0; border-bottom-right-radius: 0" disabled="disabled"><span class="glyphicon glyphicon-minus"></span></button>';
+                            /****/list = list + '<div style="margin-bottom: 20px;">';
+                            /******/list = list + '<strong>' + row.Descricao + '</strong>';
                             /****/list = list + '</div>';
-                            /****/list = list + '<div style="text-align: center; width: 34%; float: left; margin-left: -1px; margin-right: -1px;">';
-                            /******/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center; border-radius: 0;" value="1">';
-                            /****/list = list + '</div>';
-                            /****/list = list + '<div style="width: 33%; float: left">';
-                            /******/list = list + '<button id="mais" type="button" class="btn btn-default btn-block" onclick="quantidadeUp()" style="border-top-left-radius: 0; border-bottom-left-radius: 0"><span class="glyphicon glyphicon-plus"></span></button>';
-                            /****/list = list + '</div>';
-                            /**/list = list + '</div>';
 
-                            /**/list = list + '<div style="margin-top: 20px;">';
-                            /****/list = list + 'Total<br>';
-                            /****/list = list + '<div class="text-success">R$ ';
-                            /******/list = list + '<span id="total">';
+                            /****/list = list + '<div style="text-align: center; margin-bottom: 20px">';
+                            /******/list = list + 'Valor unitário<br>R$ ';
+                            /******/list = list + '<span id="valor-unitario">';
                             /********/list = list + row.Preco;
                             /******/list = list + '</span>';
-                            /**/list = list + '</div>';
+                            /****/list = list + '</div>';
+
+                            /****/list = list + '<div style="overflow: auto">';
+                            /******/list = list + '<div style="width: 33%; float: left">';
+                            /********/list = list + '<button id="menos" type="button" class="btn btn-default btn-block" onclick="quantidadeDown()" style="border-top-right-radius: 0; border-bottom-right-radius: 0" disabled="disabled"><span class="glyphicon glyphicon-minus"></span></button>';
+                            /******/list = list + '</div>';
+                            /******/list = list + '<div style="text-align: center; width: 34%; float: left; margin-left: -1px; margin-right: -1px;">';
+                            /********/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center; border-radius: 0;" value="1">';
+                            /******/list = list + '</div>';
+                            /******/list = list + '<div style="width: 33%; float: left">';
+                            /********/list = list + '<button id="mais" type="button" class="btn btn-default btn-block" onclick="quantidadeUp()" style="border-top-left-radius: 0; border-bottom-left-radius: 0"><span class="glyphicon glyphicon-plus"></span></button>';
+                            /******/list = list + '</div>';
+                            /****/list = list + '</div>';
+
+                            /****/list = list + '<div style="margin-top: 20px;">';
+                            /******/list = list + 'Total<br>';
+                            /******/list = list + '<div class="text-success">R$ ';
+                            /********/list = list + '<span id="total">';
+                            /**********/list = list + row.Preco;
+                            /********/list = list + '</span>';
+                            /****/list = list + '</div>';
+                            /****/list = list + '</div>';
+
+                            /****/list = list + '<div style="margin-top: 20px;">';
+                            /******/list = list + '<textarea id="observacoes" class="form-control" rows="2" placeholder="Observações..."></textarea>';
+                            /****/list = list + '</div>';
+
+                            /****/list = list + '<div style="margin-top: 20px;">';
+                            /******/list = list + '<a href="#" class="btn btn-success btn-block" onclick="adicionarItem()"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
+                            /****/list = list + '</div>';
+
+                            /****/list = list + '<div style="margin-top: 20px;">';
+                            /******/list = list + '<a href="#" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                            /****/list = list + '</div>';
+
                             /**/list = list + '</div>';
 
-                            /**/list = list + '<div style="margin-top: 20px;">';
-                            /****/list = list + '<textarea class="form-control" rows="2" placeholder="Observações..."></textarea>';
-                            /**/list = list + '</div>';
+                            list = list + '</div>';
 
-                            /**/list = list + '<div style="margin-top: 20px;">';
-                            /****/list = list + '<a href="carrinho.html" class="btn btn-success btn-block"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
-                            /**/list = list + '</div>';
-
-                            /**/list = list + '<div style="margin-top: 20px;">';
-                            /****/list = list + '<a href="#" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
-                            /**/list = list + '</div>';
-
-                            list = list + '</div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '<div class="debug" style="margin-top: 20px"><a href="produto-edicao.html?id=' + row.Id + '" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pencil"></span></a></div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '<div class="debug">';
-                            list = list + '<div id="confirmModal' + row.Id + '" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true" style="display: none;">';
-                            list = list + '<div class="modal-dialog">';
-                            list = list + '<div class="modal-content">';
-                            list = list + '<div class="modal-header">';
-                            list = list + '<h4 class="modal-title" id="confirmModal' + row.Id + '">Atenção!</h4>';
-                            list = list + '</div>';
-                            list = list + '<div class="modal-body">';
-                            list = list + 'Tem certeza da exclusão do registro?';
-                            list = list + '</div>';
-                            list = list + '<div class="modal-footer" style="text-align:center">';
-                            list = list + '<button class="btn btn-danger" onclick="del(' + row.Id + ')">Sim</button>';
-                            list = list + '<button type="button" class="btn btn-default" data-dismiss="modal">Não</button>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '<div class="debug" style="margin-top: 20px"><button class="btn btn-default btn-block" data-toggle="modal" data-target="#confirmModal' + row.Id + '"><span class="glyphicon glyphicon-remove"></span></button></div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '</div>';
                         }
                     } else {
-                        // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                        list = list + '<div class="debug" style="margin-bottom: 20px"><a href="produto-cadastro.html" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Cadastrar</a></div>';
-                        // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                         list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
                     }
                     output.innerHTML = list;
@@ -186,16 +166,37 @@
                     }
                 }
 
-                function del(id) {
-                    db.transaction(function(transaction) {
-                        transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
-                    }, errorCallBack, pageReload);
-                }
+                function adicionarItem() {
 
-                function deleteProdutoRecords() {
-                    db.transaction(function(transaction) {
-                        transaction.executeSql('DELETE FROM Produto', [], nullCallBack, errorCallBack);
-                    }, errorCallBack, pageReload);
+                    //var vCategoriaId = document.getElementById('inputCategoriaId').value;
+
+                    var vPedidoStatus = '1';
+
+                    /*db.transaction(function(transaction) {
+                     transaction.executeSql('INSERT INTO Pedido(Status) VALUES (?)', [vPedidoStatus], nullCallBack, errorCallBack);
+                     }, errorCallBack, successCallBack);*/
+
+                    /*db.transaction(function(transaction) {
+                     transaction.executeSql("SELECT * FROM Pedido WHERE Status = '1'", [], function(transaction, result) {
+                     if (result.rows.item(0)['Id'] == null) {
+                     alert('Nenhum pedido aberto!');
+                     } else {
+                     alert(result.rows.item(0)['Id']);
+                     }
+                     }, errorCallBack);
+                     }, errorCallBack, successCallBack);*/
+
+                    db.transaction(function(tx) {
+                        tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' order by Id DESC limit 1", [], function(tx, results) {
+                            if (results.rows.item(0)['Id'] == null) {
+                                alert('0');
+                            }
+                            else {
+                                alert('1');
+                            }
+                        }, errorCallBack);
+                    }, errorCallBack, successCallBack);
+
                 }
 
                 function pageReload() {
