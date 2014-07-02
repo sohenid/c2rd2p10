@@ -29,7 +29,7 @@
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Config(Id INTEGER NULL, DeviceId Integer NULL)");
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Pedido (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, Status TEXT NULL)");
                 // status do pedido (0 cancelado, 1 aberto/pendente, 2 enviado/solicitado)
-                tx.executeSql("CREATE TABLE IF NOT EXISTS PedidoProduto (PedidoId INTEGER NULL, ProdutoId INTEGER NULL, ValorUnitario TEXT NULL, Quantidade TEXT NULL, ValorTotal TEXT NULL, Observacao TEXT NULL, DataInsert TEXT NULL)");
+                tx.executeSql("CREATE TABLE IF NOT EXISTS PedidoProduto (PedidoId INTEGER NULL, ProdutoId INTEGER NULL, ValorUnitario TEXT NULL, Quantidade TEXT NULL, ValorTotal TEXT NULL, Observacao TEXT NULL)");
             }
 
             function setTableConfig() {

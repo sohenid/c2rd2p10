@@ -83,22 +83,23 @@
 
                             list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
 
-                            /**/list = list + '<div>';
-                            /****/list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
+                            /**/list = list + '<div style="overflow: auto; width: 100%; display: table; margin-bottom: 20px; border-bottom: 1px solid #eee">';
+                            /****/list = list + '<div style="width: 50%; display: table-cell; vertical-align: middle;">';
+                            /******/list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
+                            /****/list = list + '</div>';
+                            /****/list = list + '<div style="width: 50%; display: table-cell; vertical-align: middle;">';
+                            /******/list = list + '<strong>' + row.Descricao + '</strong>';
+                            /******/list = list + '<br>R$ <span id="valor-unitario">';
+                            /********/list = list + row.Preco;
+                            /******/list = list + '</span>';
+                            /****/list = list + '</div>';
                             /**/list = list + '</div>';
 
                             /**/list = list + '<div class="x-pedido">';
 
-                            /****/list = list + '<div style="margin-bottom: 20px;">';
-                            /******/list = list + '<strong>' + row.Descricao + '</strong>';
-                            /****/list = list + '</div>';
-
-                            /****/list = list + '<div style="text-align: center; margin-bottom: 20px">';
-                            /******/list = list + 'Valor unitário<br>R$ ';
-                            /******/list = list + '<span id="valor-unitario">';
-                            /********/list = list + row.Preco;
-                            /******/list = list + '</span>';
-                            /****/list = list + '</div>';
+                            /**/list = list + '<div style="text-align: center; margin-bottom: 10px">';
+                            /****/list = list + 'Quantidade';
+                            /**/list = list + '</div>';
 
                             /****/list = list + '<div style="overflow: auto">';
                             /******/list = list + '<div style="width: 33%; float: left">';
@@ -112,25 +113,25 @@
                             /******/list = list + '</div>';
                             /****/list = list + '</div>';
 
-                            /****/list = list + '<div style="margin-top: 20px;">';
-                            /******/list = list + 'Total<br>';
-                            /******/list = list + '<div class="text-success">R$ ';
-                            /********/list = list + '<span id="total">';
-                            /**********/list = list + row.Preco;
-                            /********/list = list + '</span>';
-                            /****/list = list + '</div>';
+                            /****/list = list + '<div class="alert alert-success" style="margin-top: 20px;">';
+                            /******/list = list + 'Total <strong>R$ ';
+                            /******/list = list + '<span id="total">';
+                            /********/list = list + row.Preco;
+                            /******/list = list + '</span></strong>';
                             /****/list = list + '</div>';
 
                             /****/list = list + '<div style="margin-top: 20px;">';
-                            /******/list = list + '<textarea id="observacoes" class="form-control" rows="2" placeholder="Observações..."></textarea>';
+                            /******/list = list + '<textarea id="observacao" class="form-control" rows="2" placeholder="Observações..."></textarea>';
+                            /****/list = list + '</div>';
+
+                            /****/ list = list + '<input id="id" type="hidden" value="' + row.Id + '">';
+
+                            /****/list = list + '<div style="margin-top: 20px;">';
+                            /******/list = list + '<a href="#" class="btn btn-success btn-block" onclick="adicionarProduto()"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
                             /****/list = list + '</div>';
 
                             /****/list = list + '<div style="margin-top: 20px;">';
-                            /******/list = list + '<a href="#" class="btn btn-success btn-block" onclick="adicionarItem()"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
-                            /****/list = list + '</div>';
-
-                            /****/list = list + '<div style="margin-top: 20px;">';
-                            /******/list = list + '<a href="#" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                            /******/list = list + '<a href="produtos.html?categoria=' + vCategoriaId + '" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
                             /****/list = list + '</div>';
 
                             /**/list = list + '</div>';
@@ -166,23 +167,34 @@
                     }
                 }
 
-                function adicionarItem() {
+                function adicionarProduto() {
 
-                    //var vCategoriaId = document.getElementById('inputCategoriaId').value;
+                    var vProdutoId = $('#id').val();
+                    var vValorUnitario = $('#valor-unitario').text();
+                    var vQuantidade = $('#quantidade').val();
+                    var vValorTotal = $('#total').text();
+                    var vObservacao = $('#observacao').val();
 
-                    var vPedidoStatus = '1';
-
-                    // 1. Verificar se já existe pedido aberto
-                    // 1.1. Se existe pega o id
-                    // 1.2. Se não existe, cria um novo pedido com status aberto
-                    
-                    // 2. Cria um registro com o item associando ao produto aberto
-                    // 2.1. Direciona para a tela onde pergunda se deseja adicionar mais itens
-
-                }
-
-                function pageReload() {
-                    location.href = 'produtos.html';
+                    db.transaction(function(tx) {
+                        tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1", [], function(tx, results) {
+                            // 1. Verifica se já existe pedido aberto
+                            if (results.rows.length > 0) {
+                                var vPedidoId = results.rows.item(0).Id;
+                                tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
+                                    location.href = 'adicionar-mais-produto.html';
+                                }, errorCallBack);
+                            } else {
+                                tx.executeSql("INSERT INTO Pedido (Status) VALUES ('1')", [], function(tx) {
+                                    tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1", [], function(tx, results) {
+                                        var vPedidoId = results.rows.item(0).Id;
+                                        tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
+                                            location.href = 'adicionar-mais-produto.html';
+                                        }, errorCallBack);
+                                    }, errorCallBack);
+                                }, errorCallBack);
+                            }
+                        }, errorCallBack);
+                    }, errorCallBack, successCallBack);
                 }
 
         </script>
