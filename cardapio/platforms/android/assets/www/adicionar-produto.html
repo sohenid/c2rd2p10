@@ -25,19 +25,12 @@
     </head>
     <body>
 
-        <div id="menu">
-            <ul>
-                <li><a href="categorias.html"><span class="glyphicon glyphicon-th-large"></span> Cardápio</a></li>
-                <li><a href="update-login.html"><span class="glyphicon glyphicon-repeat"></span> Atualizar</a></li>
-                <li><a href="config-login.html"><span class="glyphicon glyphicon-cog"></span> Configurar</a></li>
-                <li><a href="#" onclick="exit()"><span class="glyphicon glyphicon-off"></span> Fechar</a></li>
-            </ul>
-        </div>
+        <script src="js/ui-menu.js"></script>
 
         <div class="clearfix" style="padding: 10px 20px; border-bottom: 1px solid #eee">
             <script>
-                var vCategoriaId = _GET('categoria');
-                document.write('<a href="produtos.html?categoria=' + vCategoriaId + '" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></a>');
+            var vCategoriaId = _GET('categoria');
+            document.write('<a href="produtos.html?categoria=' + vCategoriaId + '" class="btn btn-default"><span class="glyphicon glyphicon-chevron-left"></span></a>');
             </script>
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
         </div>

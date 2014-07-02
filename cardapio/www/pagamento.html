@@ -11,14 +11,7 @@
     </head>
     <body>
 
-        <div id="menu">
-            <ul>
-                <li><a href="categorias.html"><span class="glyphicon glyphicon-th-large"></span> Cardápio</a></li>
-                <li><a href="update-login.html"><span class="glyphicon glyphicon-repeat"></span> Atualizar</a></li>
-                <li><a href="config-login.html"><span class="glyphicon glyphicon-cog"></span> Configurar</a></li>
-                <li><a href="#" onclick="exit()"><span class="glyphicon glyphicon-off"></span> Fechar</a></li>
-            </ul>
-        </div>
+        <script src="js/ui-menu.js"></script>
 
         <div class="clearfix" style="padding: 10px 20px; border-bottom: 1px solid #eee">
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
@@ -30,41 +23,49 @@
 
         <div class="main">
             <div id="output" class="clearfix">
-                <div id="pagamento-group" style="margin-top: 20px; margin-bottom: 20px;">
+
+                <!-- PASSO 1 -->
+                <div class="passo1" style="margin-top: 20px; margin-bottom: 20px;">
                     <div style="margin-bottom: 10px">
                         Escolha a forma de pagamento:
                     </div>
                     <select id="pagamento" class="form-control">
+                        <option value="">Pagar com</option>
                         <option value="1">Cartão de Crédito</option>
                         <option value="2">Cartão de Dédito</option>
                         <option value="3">Dinheiro</option>
                     </select>
                 </div>
-                <div id="troco-group" style="margin-bottom: 20px; display: none">
-                    <div style="margin-bottom: 10px">
-                        Precisa de troco?
-                    </div>
+
+                <!-- PASSO 2 -->
+                <div class="passo2" style="margin-bottom: 20px; display: none">
                     <select id="troco" class="form-control">
+                        <option value="">Precisa de troco?</option>
                         <option value="N">Não</option>
                         <option value="S">Sim</option>
                     </select>
                 </div>
-                <div id="troco-valor-group" style="margin-bottom: 20px; display: none">
+
+                <!-- PASSO 3 -->
+                <div class="passo3" style="margin-bottom: 20px; display: none">
                     <div style="margin-bottom: 10px">
                         Troco pra quanto?
                     </div>
                     <script>
                         document.write('<select id="troco-valor" class="form-control">');
-                        document.write('<option value="">Valor</option>');
+                        document.write('<option value="">Troco para</option>');
                         for (i = 1; i <= 1000; i++) {
                             document.write('<option value="' + i + '">R$ ' + i + ',00</option>');
                         }
                         document.write('</select>');
                     </script>
                 </div>
-                <div id="continuar-group" style="display: none">
+
+                <!-- PASSO 4 -->
+                <div class="passo4" style="display: none">
                     <a href="#" class="btn btn-success btn-block">Confirmar</a>
                 </div>
+
             </div>
         </div>
 
@@ -79,28 +80,52 @@
 
                         $('#output').css('height', vWindowHeight - 110);
 
+                        // passo 1
                         $('#pagamento').change(function() {
-                            if ($('#pagamento').val() == '3') {
-                                $('#continuar-group').css('display', 'none');
-                                $('#troco-group').css('display', 'block');
+                            if ($('#pagamento').val() == '') {
+                                $('.passo2').css('display', 'none');
+                                $('.passo3').css('display', 'none');
+                                $('.passo4').css('display', 'none');
+                            }
+                            else if ($('#pagamento').val() == '3') {
+                                $('.passo2').css('display', 'block');
+                                $('.passo3').css('display', 'none');
+                                $('.passo4').css('display', 'none');
                             } else {
-                                $('#continuar-group').css('display', 'block');
+                                $('.passo2').css('display', 'none');
+                                $('.passo3').css('display', 'none');
+                                $('.passo4').css('display', 'block');
                             }
                         });
 
+                        // passo 2
                         $('#troco').change(function() {
-                            if ($('#troco').val() == 'S') {
-                                $('#troco-valor-group').css('display', 'block');
+                            if ($('#troco').val() == '') {
+                                $('.passo3').css('display', 'none');
+                                $('.passo4').css('display', 'none');
+                            }
+                            else if ($('#troco').val() == 'S') {
+                                $('.passo3').css('display', 'block');
+                                $('.passo4').css('display', 'none');
+                            } else {
+                                $('.passo3').css('display', 'none');
+                                $('.passo4').css('display', 'block');
                             }
                         });
 
+                        // passo 3
                         $('#troco-valor').change(function() {
                             if ($('#troco-valor').val() != '') {
-                                $('#continuar-group').css('display', 'block');
+                                $('.passo4').css('display', 'block');
                             } else {
-                                $('#continuar-group').css('display', 'none');
+                                $('.passo4').css('display', 'none');
                             }
                         });
+
+                        /*
+                         Quando desabilitar e habilitar novamente algum item que já havia sido selecionado
+                         resetar os valores dos itens.
+                         */
 
         </script>
 
