@@ -27,10 +27,10 @@
                 <!-- PASSO 1 -->
                 <div class="passo1" style="margin-top: 20px; margin-bottom: 20px;">
                     <div style="margin-bottom: 10px">
-                        Escolha a forma de pagamento:
+                        Qual a forma de pagamento?
                     </div>
                     <select id="pagamento" class="form-control">
-                        <option value="">Pagar com</option>
+                        <option value="">Vou pagar com</option>
                         <option value="1">Cartão de Crédito</option>
                         <option value="2">Cartão de Dédito</option>
                         <option value="3">Dinheiro</option>
@@ -39,8 +39,11 @@
 
                 <!-- PASSO 2 -->
                 <div class="passo2" style="margin-bottom: 20px; display: none">
+                    <div style="margin-bottom: 10px">
+                        Precisa de troco?
+                    </div>
                     <select id="troco" class="form-control">
-                        <option value="">Precisa de troco?</option>
+                        <option value=""></option>
                         <option value="N">Não</option>
                         <option value="S">Sim</option>
                     </select>
@@ -55,7 +58,7 @@
                         document.write('<select id="troco-valor" class="form-control">');
                         document.write('<option value="">Troco para</option>');
                         for (i = 1; i <= 1000; i++) {
-                            document.write('<option value="' + i + '">R$ ' + i + ',00</option>');
+                            document.write('<option value="' + i + '">R$ ' + i + '.00</option>');
                         }
                         document.write('</select>');
                     </script>
