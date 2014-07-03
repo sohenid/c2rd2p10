@@ -24,23 +24,7 @@
         <div class="main">
             <div id="output" class="clearfix">
 
-                <div style="margin-top: 20px">
-                    <a href="categorias.html" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Adicionar item</a>
-                </div>
-
-                <table class="table table-bordered" style="width: 100%; margin: 0; margin-top: 20px;">
-                    <tr>
-                        <th>Item</th>
-                        <th style="text-align: center">Qtd.</th>
-                        <th style="text-align: center">Valor</th>
-                        <th></th>
-                    </tr>
-                    <tr>
-                        <td style="vertical-align: middle">Prato da Casa</td>
-                        <td style="text-align: center; vertical-align: middle">2</td>
-                        <td style="text-align: right; vertical-align: middle">R$&nbsp;90,00</td>
-                        <td style="vertical-align: middle; text-align: center"><a href="#" class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></a></td>
-                    </tr>
+                <!--
                     <tr>
                         <td class="text-right" colspan="4" style="vertical-align: middle">
                             <strong>Total <span class="text-success">R$&nbsp;90,00</span></strong>
@@ -48,9 +32,7 @@
                     </tr>
                 </table>
 
-                <div style="margin-top: 20px">
-                    <a href="pagamento.html" class="btn btn-success btn-block">Continuar</a>
-                </div>
+                -->
 
             </div>
         </div>
@@ -66,74 +48,65 @@
         <script type="text/javascript">
 
                 $('#output').css('height', vWindowHeight - 110);
-
-                //document.addEventListener("deviceready", onDeviceReady, false);
-
+                document.addEventListener("deviceready", onDeviceReady, false);
                 function onDeviceReady() {
                     db.transaction(getRecords, errorCallBack, successCallBack);
                 }
 
                 function getRecords(tx) {
-                    var vCategoriaId = _GET('categoria');
-                    tx.executeSql("SELECT * FROM Produto WHERE Status = '1' and CategoriaId = ? ORDER BY Descricao ASC", [vCategoriaId], showRecords, errorCallBack);
+                    tx.executeSql("SELECT * FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], showRecords, errorCallBack);
                 }
 
                 function showRecords(tx, result) {
                     var output = document.getElementById("output");
                     var list = '';
+                    list = list + '<div style="margin-top: 20px">';
+                    list = list + '<a href = "categorias.html" class = "btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Adicionar item</a>';
+                    list = list + '</div>';
                     if (result.rows.length > 0) {
-                        list = list + '<div class="debug" style="margin-bottom: 20px"><button class="btn btn-default btn-block" onclick="deleteProdutoRecords()"><span class="glyphicon glyphicon-trash"></span> Limpar registros</button></div>';
+
+                        list = list + '<table class="table table-bordered" style="width: 100%; margin: 0; margin-top: 20px;">';
+                        list = list + '<tr>';
+                        list = list + '<th>Item</th>';
+                        list = list + '<th style="text-align: center">Qtd.</th>';
+                        list = list + '<th style="text-align: center">Valor</th>';
+                        list = list + '<th></th>';
+                        list = list + '</tr>';
+
                         for (var i = 0; i < result.rows.length; i++) {
-                            var row = result.rows.item(i);
-                            list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
-                            list = list + '<h1>' + row.Descricao + '</h1>';
-                            list = list + '<h2 class="text-danger">R$ ' + row.Preco + '</h2>';
-                            list = list + '<div>';
-                            list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
-                            list = list + '</div>';
-                            list = list + '<div class="x-pedido">';
-                            list = list + '<a href="adicionar-produto.html?categoria=' + _GET('categoria') + '&id=' + row.Id + '" class="btn btn-danger btn-block" style="margin-top: 20px"><span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao carrinho</a>';
-                            list = list + '</div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '<div class="debug" style="margin-top: 20px"><a href="produto-edicao.html?id=' + row.Id + '" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pencil"></span></a></div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '<div class="debug">';
-                            list = list + '<div id="confirmModal' + row.Id + '" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true" style="display: none;">';
-                            list = list + '<div class="modal-dialog">';
-                            list = list + '<div class="modal-content">';
-                            list = list + '<div class="modal-header">';
-                            list = list + '<h4 class="modal-title" id="confirmModal' + row.Id + '">Atenção!</h4>';
-                            list = list + '</div>';
-                            list = list + '<div class="modal-body">';
-                            list = list + 'Tem certeza da exclusão do registro?';
-                            list = list + '</div>';
-                            list = list + '<div class="modal-footer" style="text-align:center">';
-                            list = list + '<button class="btn btn-danger" onclick="del(' + row.Id + ')">Sim</button>';
-                            list = list + '<button type="button" class="btn btn-default" data-dismiss="modal">Não</button>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '<div class="debug" style="margin-top: 20px"><button class="btn btn-default btn-block" data-toggle="modal" data-target="#confirmModal' + row.Id + '"><span class="glyphicon glyphicon-remove"></span></button></div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '</div>';
+                            list = list + '<tr>';
+                            list = list + '<td style="vertical-align: middle">' + result.rows.item(i).ProdutoId + '</td>';
+                            list = list + '<td style="text-align: center; vertical-align: middle">' + result.rows.item(i).Quantidade + '</td>';
+                            list = list + '<td style="text-align: right; vertical-align: middle">R$&nbsp;' + result.rows.item(i).ValorTotal + '</td>';
+                            list = list + '<td style="vertical-align: middle; text-align: center"><a href="#" class="btn btn-danger" onclick="deleteItem(' + result.rows.item(i).PedidoId + ',' + result.rows.item(i).ProdutoId + ')"><span class="glyphicon glyphicon-trash"></span></a></td>';
+                            list = list + '</tr>';
                         }
+                        list = list + '</table>';
+                        list = list + '<div style="margin-top: 20px">';
+                        list = list + '<a href="pagamento.html" class="btn btn-success btn-block"><span class="glyphicon glyphicon-chevron-right"></span> Continuar</a>';
+                        list = list + '</div>';
+                        list = list + '<div style="margin-top: 20px">';
+                        list = list + '<a href="#" class="btn btn-danger btn-block" onclick="cancelPedido(1)"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                        list = list + '</div>';
                     } else {
-                        // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                        list = list + '<div class="debug" style="margin-bottom: 20px"><a href="produto-cadastro.html" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Cadastrar</a></div>';
-                        // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                         list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
                     }
                     output.innerHTML = list;
                 }
 
-                function del(id) {
-                    db.transaction(function(transaction) {
-                        transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
-                    }, errorCallBack, pageReload);
+                function deleteItem(pPedidoId, pProdutoId) {
+                    alert('Excluir item...');
+                    /*db.transaction(function(transaction) {
+                     transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
+                     }, errorCallBack, pageReload);*/
                 }
 
+                function cancelPedido(pPedidoId) {
+                    alert('Cancelar pedido...');
+                    /*db.transaction(function(transaction) {
+                     transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
+                     }, errorCallBack, pageReload);*/
+                }
 
                 function deleteProdutoRecords() {
                     db.transaction(function(transaction) {
@@ -148,7 +121,6 @@
                 function _GET(param) {
                     var url = window.location.search.replace("?", "");
                     var itens = url.split("&");
-
                     for (n in itens)
                     {
                         if (itens[n].match(param))
