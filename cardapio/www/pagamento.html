@@ -24,6 +24,10 @@
         <div class="main">
             <div id="output" class="clearfix">
 
+                <div class="alert alert-success" style="margin-top: 20px; margin-bottom: 0; padding: 10px;">
+                    <h3 id="total-a-pagar" style="margin:0; padding: 0; text-align: center"></h3>
+                </div>
+
                 <!-- PASSO 1 -->
                 <div class="passo1" style="margin-top: 20px; margin-bottom: 20px;">
                     <div style="margin-bottom: 10px">
@@ -56,8 +60,8 @@
                     </div>
                     <script>
                         document.write('<select id="troco-valor" class="form-control">');
-                        document.write('<option value="">Troco para</option>');
-                        for (i = 1; i <= 1000; i++) {
+                        document.write('<option value=""></option>');
+                        for (i = 5; i <= 500; i += 5) {
                             document.write('<option value="' + i + '">R$ ' + i + '.00</option>');
                         }
                         document.write('</select>');
@@ -65,8 +69,8 @@
                 </div>
 
                 <!-- PASSO 4 -->
-                <div class="passo4" style="display: none">
-                    <a href="#" class="btn btn-success btn-block">Confirmar</a>
+                <div class="passo4" style="display: none; margin-bottom: 20px;">
+                    <a href="#" class="btn btn-success btn-block" onclick="confirm()">Confirmar</a>
                 </div>
 
             </div>
@@ -83,8 +87,12 @@
 
                         $('#output').css('height', vWindowHeight - 110);
 
+                        document.addEventListener("deviceready", onDeviceReady, false);
+
                         // passo 1
                         $('#pagamento').change(function() {
+                            $('#troco').prop('selectedIndex', 0);
+                            $('#troco-valor').prop('selectedIndex', 0);
                             if ($('#pagamento').val() == '') {
                                 $('.passo2').css('display', 'none');
                                 $('.passo3').css('display', 'none');
@@ -103,6 +111,7 @@
 
                         // passo 2
                         $('#troco').change(function() {
+                            $('#troco-valor').prop('selectedIndex', 0);
                             if ($('#troco').val() == '') {
                                 $('.passo3').css('display', 'none');
                                 $('.passo4').css('display', 'none');
@@ -125,10 +134,39 @@
                             }
                         });
 
-                        /*
-                         Quando desabilitar e habilitar novamente algum item que já havia sido selecionado
-                         resetar os valores dos itens.
-                         */
+                        function confirm() {
+                            var vPagamento = $('#pagamento').val();
+                            var vTroco = $('#troco-valor').val() != '' ? parseFloat($('#troco-valor').val()).toFixed(2) : '0';
+                            db.transaction(function(transaction) {
+                                transaction.executeSql("UPDATE Pedido SET Status = '2', Pagamento = ?, Troco = ? WHERE Status = '1'", [vPagamento, vTroco], nullCallBack, errorCallBack);
+                            }, errorCallBack, function() {
+                                location.href = 'pedido-enviado.html';
+                            });
+                        }
+
+
+                        function onDeviceReady() {
+                            db.transaction(getTotal, errorCallBack, successCallBack);
+                        }
+
+                        function getTotal(tx) {
+                            tx.executeSql("SELECT ValorTotal FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1')", [], showTotal, errorCallBack);
+                        }
+
+                        function showTotal(tx, result) {
+                            var output = document.getElementById("total-a-pagar");
+                            var list = 'Total:&nbsp;R$&nbsp;';
+                            if (result.rows.length > 0) {
+                                var vTotalAPagar = 0;
+                                for (var i = 0; i < result.rows.length; i++) {
+                                    vTotalAPagar = parseFloat((parseFloat(vTotalAPagar) + parseFloat(result.rows.item(i).ValorTotal))).toFixed(2);
+                                }
+                                list = list + vTotalAPagar;
+                            } else {
+                                list = list + '0.00';
+                            }
+                            output.innerHTML = list;
+                        }
 
         </script>
 

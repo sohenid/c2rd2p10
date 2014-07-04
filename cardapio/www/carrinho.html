@@ -22,19 +22,7 @@
         </div>
 
         <div class="main">
-            <div id="output" class="clearfix">
-
-                <!--
-                    <tr>
-                        <td class="text-right" colspan="4" style="vertical-align: middle">
-                            <strong>Total <span class="text-success">R$&nbsp;90,00</span></strong>
-                        </td>
-                    </tr>
-                </table>
-
-                -->
-
-            </div>
+            <div id="output" class="clearfix"></div>
         </div>
 
         <script type="text/javascript" src="cordova.js"></script>
@@ -54,7 +42,7 @@
                 }
 
                 function getRecords(tx) {
-                    tx.executeSql("SELECT * FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], showRecords, errorCallBack);
+                    tx.executeSql("SELECT a.*, (SELECT descricao FROM Produto WHERE Id = a.ProdutoId) as Produto FROM PedidoProduto a WHERE a.PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], showRecords, errorCallBack);
                 }
 
                 function showRecords(tx, result) {
@@ -65,28 +53,57 @@
                     list = list + '</div>';
                     if (result.rows.length > 0) {
 
-                        list = list + '<table class="table table-bordered" style="width: 100%; margin: 0; margin-top: 20px;">';
+                        list = list + '<table class="table table-condensed" style="width: 100%; margin: 0; margin-top: 20px;">';
                         list = list + '<tr>';
-                        list = list + '<th>Item</th>';
-                        list = list + '<th style="text-align: center">Qtd.</th>';
-                        list = list + '<th style="text-align: center">Valor</th>';
-                        list = list + '<th></th>';
+                        list = list + '<th colspan="4" style="border-top: none; padding-left:0">Detalhes</th>';
                         list = list + '</tr>';
+
+                        var vTotal = 0;
 
                         for (var i = 0; i < result.rows.length; i++) {
                             list = list + '<tr>';
-                            list = list + '<td style="vertical-align: middle">' + result.rows.item(i).ProdutoId + '</td>';
-                            list = list + '<td style="text-align: center; vertical-align: middle">' + result.rows.item(i).Quantidade + '</td>';
-                            list = list + '<td style="text-align: right; vertical-align: middle">R$&nbsp;' + result.rows.item(i).ValorTotal + '</td>';
-                            list = list + '<td style="vertical-align: middle; text-align: center"><a href="#" class="btn btn-danger" onclick="deleteItem(' + result.rows.item(i).PedidoId + ',' + result.rows.item(i).ProdutoId + ')"><span class="glyphicon glyphicon-trash"></span></a></td>';
+                            list = list + '<td colspan="3" style="vertical-align: middle; padding-left: 0;">';
+                            list = list + result.rows.item(i).Quantidade + '<br>';
+                            list = list + result.rows.item(i).Produto + '<br>';
+                            list = list + 'R$ ' + result.rows.item(i).ValorTotal;
+                            list = list + '</td>';
+                            list = list + '<td style="vertical-align: middle; text-align: center; width: 1px; padding-right: 0">';
+                            /**/list = list + '<a href="#" class="btn btn-default" onclick="deleteItem(' + result.rows.item(i).Id + ')"><span class="glyphicon glyphicon-trash"></span></a>';
+                            list = list + '</td>';
                             list = list + '</tr>';
+                            vTotal += parseFloat(result.rows.item(i).ValorTotal);
                         }
+                        list = list + '<tr>';
+                        list = list + '<td class="text-right" colspan="4" style="vertical-align: middle; padding-right: 0">';
+                        list = list + 'Total <strong class="text-success">R$&nbsp;' + vTotal.toFixed(2) + '</strong>';
+                        list = list + '</td>';
+                        list = list + '</tr>';
                         list = list + '</table>';
                         list = list + '<div style="margin-top: 20px">';
                         list = list + '<a href="pagamento.html" class="btn btn-success btn-block"><span class="glyphicon glyphicon-chevron-right"></span> Continuar</a>';
                         list = list + '</div>';
-                        list = list + '<div style="margin-top: 20px">';
-                        list = list + '<a href="#" class="btn btn-danger btn-block" onclick="cancelPedido(1)"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                        list = list + '<div style="margin-top: 20px; margin-bottom: 20px;">';
+
+                        // confirm-modal-delete-pedido
+                        list = list + '<div id="confirm-modal-delete-pedido" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-delete-pedido" aria-hidden="true" style="display: none;">';
+                        list = list + '<div class="modal-dialog">';
+                        list = list + '<div class="modal-content">';
+                        list = list + '<div class="modal-header">';
+                        list = list + '<h4 class="modal-title">Atenção!</h4>';
+                        list = list + '</div>';
+                        list = list + '<div class="modal-body">';
+                        list = list + 'Tem certeza do cancelamento do pedido?';
+                        list = list + '</div>';
+                        list = list + '<div class="modal-footer" style="text-align:center; margin-top: 0;">';
+                        list = list + '<button class="btn btn-danger" onclick="deletePedido()">Sim</button>';
+                        list = list + '<button type="button" class="btn btn-default" data-dismiss="modal">Não</button>';
+                        list = list + '</div>';
+                        list = list + '</div>';
+                        list = list + '</div>';
+                        list = list + '</div>';
+                        // confirm-modal-delete-pedido
+
+                        list = list + '<a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#confirm-modal-delete-pedido"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
                         list = list + '</div>';
                     } else {
                         list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
@@ -94,28 +111,28 @@
                     output.innerHTML = list;
                 }
 
-                function deleteItem(pPedidoId, pProdutoId) {
-                    alert('Excluir item...');
-                    /*db.transaction(function(transaction) {
-                     transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
-                     }, errorCallBack, pageReload);*/
+                function deleteItem(pId) {
+                    db.transaction(function(transaction) {
+                        transaction.executeSql("DELETE FROM PedidoProduto WHERE Id = ?", [pId], nullCallBack, errorCallBack);
+                    }, errorCallBack, function() {
+                        location.href = 'carrinho.html';
+                    });
                 }
 
-                function cancelPedido(pPedidoId) {
-                    alert('Cancelar pedido...');
-                    /*db.transaction(function(transaction) {
-                     transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
-                     }, errorCallBack, pageReload);*/
+                function deletePedido() {
+                    db.transaction(function(tx) {
+                        tx.executeSql("DELETE FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], function(tx) {
+                            tx.executeSql("DELETE FROM Pedido WHERE Status = '1'", [], nullCallBack, errorCallBack);
+                        }, errorCallBack);
+                    }, errorCallBack, function() {
+                        location.href = 'carrinho.html';
+                    });
                 }
 
                 function deleteProdutoRecords() {
                     db.transaction(function(transaction) {
                         transaction.executeSql('DELETE FROM Produto', [], nullCallBack, errorCallBack);
                     }, errorCallBack, pageReload);
-                }
-
-                function pageReload() {
-                    location.href = 'produtos.html';
                 }
 
                 function _GET(param) {
