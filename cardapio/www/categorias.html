@@ -49,10 +49,11 @@
                     //list = list + '<div class="debug" style="margin-bottom: 20px"><button class="btn btn-default btn-block" onclick="deleteCategoriaRecords()"><span class="glyphicon glyphicon-trash"></span> Limpar registros</button></div>';
                     for (var i = 0; i < result.rows.length; i++) {
                         var row = result.rows.item(i);
-                        list = list + '<div style="display:table; width: 100%; margin-top: 20px;">';
-                        /**/list = list + '<div style="display: table-cell; width: 50%; height: 100px; padding:10px; text-align: center; vertical-align: middle; border: 1px solid #eee; border-radius: 5px;">';
+
+                        list = list + '<div style="display:table; width: 100%; margin-top: 20px; border: 1px solid #eee; border-radius: 5px">';
+                        /**/list = list + '<div style="display: table-cell; width: 50%; height: 75px; padding:10px; text-align: center; vertical-align: middle;">';
                         /****/list = list + '<a href="produtos.html?categoria=' + row.Id + '">';
-                        /******/list = list + '<img style="max-width: 100%; max-height: 100px" src="' + row.Imagem + '">';
+                        /******/list = list + '<img style="max-width: 100%; max-height: 75px" src="' + row.Imagem + '">';
                         /****/list = list + '</a>';
                         /**/list = list + '</div>';
                         /**/list = list + '<div style="display: table-cell; width: 50%; padding-left: 10px; vertical-align: middle;">';
@@ -61,6 +62,7 @@
                         /****/list = list + '</a>';
                         /**/list = list + '</div>';
                         list = list + '</div>';
+
                         /*list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
                          // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                          list = list + '<div class="debug" style="margin-top: 20px"><a href="categoria-edicao.html?id=' + row.Id + '" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pencil"></span></a></div>';
@@ -89,7 +91,7 @@
                     }
                 } else {
                     // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                    list = list + '<div class="debug" style="margin-bottom: 20px"><a href="categoria-cadastro.html" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Cadastrar</a></div>';
+                    //list = list + '<div class="debug" style="margin-bottom: 20px"><a href="categoria-cadastro.html" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Cadastrar</a></div>';
                     // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
                     list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
                 }

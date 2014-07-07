@@ -66,7 +66,7 @@
 
                 <!-- PASSO 4 -->
                 <div class="passo4" style="display: none; margin-bottom: 20px;">
-                    <a href="#" class="btn btn-success btn-block" onclick="confirm()">Confirmar</a>
+                    <a href="#" class="btn btn-success btn-block" onclick="confirm()">Confirmar e enviar</a>
                 </div>
 
             </div>
@@ -130,17 +130,6 @@
                             }
                         });
 
-                        function confirm() {
-                            var vPagamento = $('#pagamento').val();
-                            var vTroco = $('#troco-valor').val() != '' ? parseFloat($('#troco-valor').val()).toFixed(2) : '0';
-                            db.transaction(function(transaction) {
-                                transaction.executeSql("UPDATE Pedido SET Status = '2', Pagamento = ?, Troco = ? WHERE Status = '1'", [vPagamento, vTroco], nullCallBack, errorCallBack);
-                            }, errorCallBack, function() {
-                                location.href = 'pedido-enviado.html';
-                            });
-                        }
-
-
                         function onDeviceReady() {
                             db.transaction(getTotal, errorCallBack, successCallBack);
                         }
@@ -162,6 +151,17 @@
                                 list = list + '0.00';
                             }
                             output.innerHTML = list;
+                        }
+
+                        function confirm() {
+                            var vPagamento = $('#pagamento').val();
+                            var vTroco = $('#troco-valor').val() != '' ? parseFloat($('#troco-valor').val()).toFixed(2) : '0';
+                            db.transaction(function(transaction) {
+                                //transaction.executeSql("UPDATE Pedido SET Status = '2', Pagamento = ?, Troco = ? WHERE Status = '1'", [vPagamento, vTroco], nullCallBack, errorCallBack);
+                                transaction.executeSql("UPDATE Pedido SET Pagamento = ?, Troco = ? WHERE Status = '1'", [vPagamento, vTroco], nullCallBack, errorCallBack);
+                            }, errorCallBack, function() {
+                                location.href = 'enviando-pedido.html';
+                            });
                         }
 
         </script>
