@@ -18,10 +18,6 @@
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
         </div>
 
-        <div style="padding: 10px 20px; border-bottom: 1px solid #eee">
-            <button class="btn btn-danger btn-block" onclick="callWaiter()"><span class="glyphicon glyphicon-bell"></span> Chamar Garçon</button>
-        </div>
-
         <div class="main">
             <div id="output" class="clearfix"></div>
         </div>
@@ -35,100 +31,105 @@
         <script type="text/javascript" src="js/functions.js"></script>
         <script type="text/javascript">
 
-                $('#output').css('height', vWindowHeight - 110);
+            $('#output').css('height', vWindowHeight - 55);
 
-                document.addEventListener("deviceready", onDeviceReady, false);
+            document.addEventListener("deviceready", onDeviceReady, false);
 
-                function onDeviceReady() {
-                    db.transaction(getRecords, errorCallBack, successCallBack);
-                }
+            function onDeviceReady() {
+                db.transaction(getRecords, errorCallBack, successCallBack);
+            }
 
-                function getRecords(tx) {
-                    var vCategoriaId = _GET('categoria');
-                    tx.executeSql("SELECT * FROM Produto WHERE Status = '1' and CategoriaId = ? ORDER BY Descricao ASC", [vCategoriaId], showRecords, errorCallBack);
-                }
+            function getRecords(tx) {
+                var vCategoriaId = _GET('categoria');
+                tx.executeSql("SELECT * FROM Produto WHERE Status = '1' and CategoriaId = ? ORDER BY Descricao ASC", [vCategoriaId], showRecords, errorCallBack);
+            }
 
-                function showRecords(tx, result) {
-                    var output = document.getElementById("output");
-                    var list = '';
-                    if (result.rows.length > 0) {
-                        list = list + '<div class="debug" style="margin-bottom: 20px"><button class="btn btn-default btn-block" onclick="deleteProdutoRecords()"><span class="glyphicon glyphicon-trash"></span> Limpar registros</button></div>';
-                        for (var i = 0; i < result.rows.length; i++) {
-                            var row = result.rows.item(i);
-                            list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
-                            list = list + '<h1>' + row.Descricao + '</h1>';
-                            list = list + '<h2 class="text-danger">R$ ' + row.Preco + '</h2>';
-                            list = list + '<div>';
-                            list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
-                            list = list + '</div>';
-                            list = list + '<div class="x-pedido">';
-                            list = list + '<a href="adicionar-produto.html?categoria=' + _GET('categoria') + '&id=' + row.Id + '" class="btn btn-danger btn-block" style="margin-top: 20px"><span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao carrinho</a>';
-                            list = list + '</div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '<div class="debug" style="margin-top: 20px"><a href="produto-edicao.html?id=' + row.Id + '" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pencil"></span></a></div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '<div class="debug">';
-                            list = list + '<div id="confirmModal' + row.Id + '" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true" style="display: none;">';
-                            list = list + '<div class="modal-dialog">';
-                            list = list + '<div class="modal-content">';
-                            list = list + '<div class="modal-header">';
-                            list = list + '<h4 class="modal-title" id="confirmModal' + row.Id + '">Atenção!</h4>';
-                            list = list + '</div>';
-                            list = list + '<div class="modal-body">';
-                            list = list + 'Tem certeza da exclusão do registro?';
-                            list = list + '</div>';
-                            list = list + '<div class="modal-footer" style="text-align:center">';
-                            list = list + '<button class="btn btn-danger" onclick="del(' + row.Id + ')">Sim</button>';
-                            list = list + '<button type="button" class="btn btn-default" data-dismiss="modal">Não</button>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '</div>';
-                            list = list + '<div class="debug" style="margin-top: 20px"><button class="btn btn-default btn-block" data-toggle="modal" data-target="#confirmModal' + row.Id + '"><span class="glyphicon glyphicon-remove"></span></button></div>';
-                            // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                            list = list + '</div>';
+            function showRecords(tx, result) {
+                var output = document.getElementById("output");
+                var list = '';
+                if (result.rows.length > 0) {
+                    list = list + '<div class="debug" style="margin-bottom: 20px"><button class="btn btn-default btn-block" onclick="deleteProdutoRecords()"><span class="glyphicon glyphicon-trash"></span> Limpar registros</button></div>';
+                    for (var i = 0; i < result.rows.length; i++) {
+                        var row = result.rows.item(i);
+                        list = list + '<div style="margin: 20px 0;">';
+                        list = list + '<div style="border: 1px solid #eee; border-radius: 5px; margin-top: 20px; padding: 10px; text-align: center">';
+                        list = list + '<img style="max-width: 100%; max-height: 250px" src="' + row.Imagem + '">';
+                        list = list + '</div>';
+                        list = list + '<div style="margin-top: 20px;">' + row.Descricao + '</div>';
+                        list = list + '<div class="text-danger">R$ ' + row.Preco + '</div>';
+                        list = list + '<div class="x-pedido">';
+                        list = list + '<a href="adicionar-produto.html?categoria=' + _GET('categoria') + '&id=' + row.Id + '" class="btn btn-danger btn-block" style="margin-top: 20px"><span class="glyphicon glyphicon-shopping-cart"></span> Adicionar ao carrinho</a>';
+                        list = list + '</div>';
+                        list = list + '</div>';
+                        if ((i + 1) < result.rows.length) {
+                            list = list + '<hr style="margin: 0;">';
                         }
-                    } else {
-                        // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                        list = list + '<div class="debug" style="margin-bottom: 20px"><a href="produto-cadastro.html" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Cadastrar</a></div>';
-                        // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-                        list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
+                        /*
+                         // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         list = list + '<div class="debug" style="margin-top: 20px"><a href="produto-edicao.html?id=' + row.Id + '" class="btn btn-default btn-block"><span class="glyphicon glyphicon-pencil"></span></a></div>';
+                         // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         list = list + '<div class="debug">';
+                         list = list + '<div id="confirmModal' + row.Id + '" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirmModal" aria-hidden="true" style="display: none;">';
+                         list = list + '<div class="modal-dialog">';
+                         list = list + '<div class="modal-content">';
+                         list = list + '<div class="modal-header">';
+                         list = list + '<h4 class="modal-title" id="confirmModal' + row.Id + '">Atenção!</h4>';
+                         list = list + '</div>';
+                         list = list + '<div class="modal-body">';
+                         list = list + 'Tem certeza da exclusão do registro?';
+                         list = list + '</div>';
+                         list = list + '<div class="modal-footer" style="text-align:center">';
+                         list = list + '<button class="btn btn-danger" onclick="del(' + row.Id + ')">Sim</button>';
+                         list = list + '<button type="button" class="btn btn-default" data-dismiss="modal">Não</button>';
+                         list = list + '</div>';
+                         list = list + '</div>';
+                         list = list + '</div>';
+                         list = list + '</div>';
+                         list = list + '</div>';
+                         list = list + '<div class="debug" style="margin-top: 20px"><button class="btn btn-default btn-block" data-toggle="modal" data-target="#confirmModal' + row.Id + '"><span class="glyphicon glyphicon-remove"></span></button></div>';
+                         // ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                         */
                     }
-                    output.innerHTML = list;
+                } else {
+                    // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    list = list + '<div class="debug" style="margin-bottom: 20px"><a href="produto-cadastro.html" class="btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Cadastrar</a></div>';
+                    // -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+                    list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
                 }
+                output.innerHTML = list;
+            }
 
-                function del(id) {
+            function del(id) {
 
-                    db.transaction(function(transaction) {
-                        transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
-                    }, errorCallBack, pageReload);
-                }
+                db.transaction(function(transaction) {
+                    transaction.executeSql("DELETE FROM Produto WHERE Id = ?", [id], nullCallBack, errorCallBack);
+                }, errorCallBack, pageReload);
+            }
 
 
-                function deleteProdutoRecords() {
-                    db.transaction(function(transaction) {
-                        transaction.executeSql('DELETE FROM Produto', [], nullCallBack, errorCallBack);
-                    }, errorCallBack, pageReload);
-                }
+            function deleteProdutoRecords() {
+                db.transaction(function(transaction) {
+                    transaction.executeSql('DELETE FROM Produto', [], nullCallBack, errorCallBack);
+                }, errorCallBack, pageReload);
+            }
 
-                function pageReload() {
-                    location.href = 'produtos.html';
-                }
+            function pageReload() {
+                location.href = 'produtos.html';
+            }
 
-                function _GET(param) {
-                    var url = window.location.search.replace("?", "");
-                    var itens = url.split("&");
+            function _GET(param) {
+                var url = window.location.search.replace("?", "");
+                var itens = url.split("&");
 
-                    for (n in itens)
+                for (n in itens)
+                {
+                    if (itens[n].match(param))
                     {
-                        if (itens[n].match(param))
-                        {
-                            return decodeURIComponent(itens[n].replace(param + "=", ""));
-                        }
+                        return decodeURIComponent(itens[n].replace(param + "=", ""));
                     }
-                    return null;
                 }
+                return null;
+            }
 
         </script>
 

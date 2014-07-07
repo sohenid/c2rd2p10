@@ -17,10 +17,6 @@
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
         </div>
 
-        <div style="padding: 10px 20px; border-bottom: 1px solid #eee">
-            <button class="btn btn-danger btn-block" onclick="callWaiter()"><span class="glyphicon glyphicon-bell"></span> Chamar Garçon</button>
-        </div>
-
         <div class="main">
             <div id="output" class="clearfix"></div>
         </div>
@@ -35,7 +31,8 @@
 
         <script type="text/javascript">
 
-                $('#output').css('height', vWindowHeight - 110);
+                $('#output').css('height', vWindowHeight - 55);
+                
                 document.addEventListener("deviceready", onDeviceReady, false);
                 function onDeviceReady() {
                     db.transaction(getRecords, errorCallBack, successCallBack);
@@ -84,26 +81,7 @@
                         list = list + '</div>';
                         list = list + '<div style="margin-top: 20px; margin-bottom: 20px;">';
 
-                        // confirm-modal-delete-pedido
-                        list = list + '<div id="confirm-modal-delete-pedido" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="confirm-modal-delete-pedido" aria-hidden="true" style="display: none;">';
-                        list = list + '<div class="modal-dialog">';
-                        list = list + '<div class="modal-content">';
-                        list = list + '<div class="modal-header">';
-                        list = list + '<h4 class="modal-title">Atenção!</h4>';
-                        list = list + '</div>';
-                        list = list + '<div class="modal-body">';
-                        list = list + 'Tem certeza do cancelamento do pedido?';
-                        list = list + '</div>';
-                        list = list + '<div class="modal-footer" style="text-align:center; margin-top: 0;">';
-                        list = list + '<button class="btn btn-danger" onclick="deletePedido()">Sim</button>';
-                        list = list + '<button type="button" class="btn btn-default" data-dismiss="modal">Não</button>';
-                        list = list + '</div>';
-                        list = list + '</div>';
-                        list = list + '</div>';
-                        list = list + '</div>';
-                        // confirm-modal-delete-pedido
-
-                        list = list + '<a href="#" class="btn btn-danger btn-block" data-toggle="modal" data-target="#confirm-modal-delete-pedido"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                        list = list + '<a href="#" class="btn btn-danger btn-block" onclick="confirmDeletePedido()"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
                         list = list + '</div>';
                     } else {
                         list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
@@ -119,33 +97,25 @@
                     });
                 }
 
-                function deletePedido() {
-                    db.transaction(function(tx) {
-                        tx.executeSql("DELETE FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], function(tx) {
-                            tx.executeSql("DELETE FROM Pedido WHERE Status = '1'", [], nullCallBack, errorCallBack);
-                        }, errorCallBack);
-                    }, errorCallBack, function() {
-                        location.href = 'carrinho.html';
-                    });
+                function confirmDeletePedido() {
+                    navigator.notification.confirm(
+                            'Tem certeza do cancelamento do pedido?',
+                            deletePedido,
+                            'Atenção!',
+                            ['Não', 'Sim']
+                            );
                 }
 
-                function deleteProdutoRecords() {
-                    db.transaction(function(transaction) {
-                        transaction.executeSql('DELETE FROM Produto', [], nullCallBack, errorCallBack);
-                    }, errorCallBack, pageReload);
-                }
-
-                function _GET(param) {
-                    var url = window.location.search.replace("?", "");
-                    var itens = url.split("&");
-                    for (n in itens)
-                    {
-                        if (itens[n].match(param))
-                        {
-                            return decodeURIComponent(itens[n].replace(param + "=", ""));
-                        }
+                function deletePedido(btn) {
+                    if (btn == 2) {
+                        db.transaction(function(tx) {
+                            tx.executeSql("DELETE FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], function(tx) {
+                                tx.executeSql("DELETE FROM Pedido WHERE Status = '1'", [], nullCallBack, errorCallBack);
+                            }, errorCallBack);
+                        }, errorCallBack, function() {
+                            location.href = 'carrinho.html';
+                        });
                     }
-                    return null;
                 }
 
         </script>

@@ -35,10 +35,6 @@
             <button class="btn btn-default pull-right closed" id="show-hide-menu"><span class="glyphicon glyphicon-align-justify"></span></button>
         </div>
 
-        <div style="padding: 10px 20px; border-bottom: 1px solid #eee;">
-            <button class="btn btn-danger btn-block" onclick="callWaiter()"><span class="glyphicon glyphicon-bell"></span> Chamar Garçon</button>
-        </div>
-
         <div class="main">
             <div id="output" class="clearfix"></div>
         </div>
@@ -52,142 +48,142 @@
         <script type="text/javascript" src="js/functions.js"></script>
         <script type="text/javascript">
 
-                $('#output').css('height', vWindowHeight - 110);
+            $('#output').css('height', vWindowHeight - 55);
 
-                document.addEventListener("deviceready", onDeviceReady, false);
-                function onDeviceReady() {
-                    db.transaction(getRecords, errorCallBack, successCallBack);
-                }
+            document.addEventListener("deviceready", onDeviceReady, false);
+            function onDeviceReady() {
+                db.transaction(getRecords, errorCallBack, successCallBack);
+            }
 
-                function getRecords(tx) {
-                    var vId = _GET('id');
-                    tx.executeSql("SELECT * FROM Produto WHERE Id = ?", [vId], showRecords, errorCallBack);
-                }
+            function getRecords(tx) {
+                var vId = _GET('id');
+                tx.executeSql("SELECT * FROM Produto WHERE Id = ?", [vId], showRecords, errorCallBack);
+            }
 
-                function showRecords(tx, result) {
-                    var output = document.getElementById("output");
-                    var list = '';
-                    if (result.rows.length > 0) {
-                        list = list + '<div class="debug" style="margin-bottom: 20px"><button class="btn btn-default btn-block" onclick="deleteProdutoRecords()"><span class="glyphicon glyphicon-trash"></span> Limpar registros</button></div>';
-                        for (var i = 0; i < result.rows.length; i++) {
+            function showRecords(tx, result) {
+                var output = document.getElementById("output");
+                var list = '';
+                if (result.rows.length > 0) {
+                    list = list + '<div class="debug" style="margin-bottom: 20px"><button class="btn btn-default btn-block" onclick="deleteProdutoRecords()"><span class="glyphicon glyphicon-trash"></span> Limpar registros</button></div>';
+                    for (var i = 0; i < result.rows.length; i++) {
 
-                            var row = result.rows.item(i);
+                        var row = result.rows.item(i);
 
-                            list = list + '<div class="thumbnail text-center" style="padding: 20px;">';
+                        list = list + '<div class="text-center" style="margin: 20px 0">';
 
-                            /**/list = list + '<div style="overflow: auto; width: 100%; display: table; margin-bottom: 20px; border-bottom: 1px solid #eee">';
-                            /****/list = list + '<div style="width: 50%; display: table-cell; vertical-align: middle;">';
-                            /******/list = list + '<img style="max-width: 100%;" src="' + row.Imagem + '">';
-                            /****/list = list + '</div>';
-                            /****/list = list + '<div style="width: 50%; display: table-cell; vertical-align: middle;">';
-                            /******/list = list + '<strong>' + row.Descricao + '</strong>';
-                            /******/list = list + '<br>R$ <span id="valor-unitario">';
-                            /********/list = list + row.Preco;
-                            /******/list = list + '</span>';
-                            /****/list = list + '</div>';
-                            /**/list = list + '</div>';
+                        /**/list = list + '<div style="overflow: auto; width: 100%; display: table; margin-bottom: 20px; border-bottom: 1px solid #eee">';
+                        /****/list = list + '<div style="width: 50%; display: table-cell; vertical-align: middle; text-align: center; padding: 10px;">';
+                        /******/list = list + '<img style="max-width: 100%; max-height: 100px" src="' + row.Imagem + '">';
+                        /****/list = list + '</div>';
+                        /****/list = list + '<div style="width: 50%; display: table-cell; vertical-align: middle; text-align: left; padding-left: 15px;">';
+                        /******/list = list + '<strong>' + row.Descricao + '</strong>';
+                        /******/list = list + '<br>R$ <span id="valor-unitario">';
+                        /********/list = list + row.Preco;
+                        /******/list = list + '</span>';
+                        /****/list = list + '</div>';
+                        /**/list = list + '</div>';
 
-                            /**/list = list + '<div class="x-pedido">';
+                        /**/list = list + '<div class="x-pedido">';
 
-                            /**/list = list + '<div style="text-align: center; margin-bottom: 10px">';
-                            /****/list = list + 'Quantidade';
-                            /**/list = list + '</div>';
+                        /**/list = list + '<div style="text-align: center; margin-bottom: 10px">';
+                        /****/list = list + 'Quantidade';
+                        /**/list = list + '</div>';
 
-                            /****/list = list + '<div style="overflow: auto">';
-                            /******/list = list + '<div style="width: 33%; float: left">';
-                            /********/list = list + '<button id="menos" type="button" class="btn btn-default btn-block" onclick="quantidadeDown()" style="border-top-right-radius: 0; border-bottom-right-radius: 0" disabled="disabled"><span class="glyphicon glyphicon-minus"></span></button>';
-                            /******/list = list + '</div>';
-                            /******/list = list + '<div style="text-align: center; width: 34%; float: left; margin-left: -1px; margin-right: -1px;">';
-                            /********/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center; border-radius: 0;" value="1">';
-                            /******/list = list + '</div>';
-                            /******/list = list + '<div style="width: 33%; float: left">';
-                            /********/list = list + '<button id="mais" type="button" class="btn btn-default btn-block" onclick="quantidadeUp()" style="border-top-left-radius: 0; border-bottom-left-radius: 0"><span class="glyphicon glyphicon-plus"></span></button>';
-                            /******/list = list + '</div>';
-                            /****/list = list + '</div>';
+                        /****/list = list + '<div style="overflow: auto">';
+                        /******/list = list + '<div style="width: 33%; float: left">';
+                        /********/list = list + '<button id="menos" type="button" class="btn btn-default btn-block" onclick="quantidadeDown()" style="border-top-right-radius: 0; border-bottom-right-radius: 0" disabled="disabled"><span class="glyphicon glyphicon-minus"></span></button>';
+                        /******/list = list + '</div>';
+                        /******/list = list + '<div style="text-align: center; width: 34%; float: left; margin-left: -1px; margin-right: -1px;">';
+                        /********/list = list + '<input id="quantidade" type="text" class="form-control" style="text-align: center; border-radius: 0;" value="1">';
+                        /******/list = list + '</div>';
+                        /******/list = list + '<div style="width: 33%; float: left">';
+                        /********/list = list + '<button id="mais" type="button" class="btn btn-default btn-block" onclick="quantidadeUp()" style="border-top-left-radius: 0; border-bottom-left-radius: 0"><span class="glyphicon glyphicon-plus"></span></button>';
+                        /******/list = list + '</div>';
+                        /****/list = list + '</div>';
 
-                            /****/list = list + '<div class="alert alert-success" style="margin-top: 20px;">';
-                            /******/list = list + 'Total <strong>R$ ';
-                            /******/list = list + '<span id="total">';
-                            /********/list = list + row.Preco;
-                            /******/list = list + '</span></strong>';
-                            /****/list = list + '</div>';
+                        /****/list = list + '<div class="alert alert-success" style="margin-top: 20px; padding: 10px;">';
+                        /******/list = list + 'Total <strong>R$ ';
+                        /******/list = list + '<span id="total">';
+                        /********/list = list + row.Preco;
+                        /******/list = list + '</span></strong>';
+                        /****/list = list + '</div>';
 
-                            /****/list = list + '<div style="margin-top: 20px;">';
-                            /******/list = list + '<textarea id="observacao" class="form-control" rows="2" placeholder="Observações..."></textarea>';
-                            /****/list = list + '</div>';
+                        /****/list = list + '<div style="margin-top: 20px;">';
+                        /******/list = list + '<textarea id="observacao" class="form-control" rows="2" placeholder="Observações..."></textarea>';
+                        /****/list = list + '</div>';
 
-                            /****/ list = list + '<input id="id" type="hidden" value="' + row.Id + '">';
+                        /****/ list = list + '<input id="id" type="hidden" value="' + row.Id + '">';
 
-                            /****/list = list + '<div style="margin-top: 20px;">';
-                            /******/list = list + '<a href="#" class="btn btn-success btn-block" onclick="adicionarProduto()"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
-                            /****/list = list + '</div>';
+                        /****/list = list + '<div style="margin-top: 20px;">';
+                        /******/list = list + '<a href="#" class="btn btn-success btn-block" onclick="adicionarProduto()"><span class="glyphicon glyphicon-plus"></span> Adicionar</a>';
+                        /****/list = list + '</div>';
 
-                            /****/list = list + '<div style="margin-top: 20px;">';
-                            /******/list = list + '<a href="produtos.html?categoria=' + vCategoriaId + '" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
-                            /****/list = list + '</div>';
+                        /****/list = list + '<div style="margin-top: 20px;">';
+                        /******/list = list + '<a href="produtos.html?categoria=' + vCategoriaId + '" class="btn btn-danger btn-block"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                        /****/list = list + '</div>';
 
-                            /**/list = list + '</div>';
+                        /**/list = list + '</div>';
 
-                            list = list + '</div>';
+                        list = list + '</div>';
 
-                        }
-                    } else {
-                        list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
                     }
-                    output.innerHTML = list;
+                } else {
+                    list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
                 }
+                output.innerHTML = list;
+            }
 
-                function quantidadeUp() {
-                    var vValorUnitario = parseFloat($('#valor-unitario').text());
+            function quantidadeUp() {
+                var vValorUnitario = parseFloat($('#valor-unitario').text());
+                var vQuantidade = parseInt($('#quantidade').val());
+                vQuantidade += 1;
+                $('#quantidade').val(vQuantidade);
+                $('#menos').removeAttr('disabled');
+                $('#total').html((vQuantidade * vValorUnitario).toFixed(2));
+            }
+
+            function quantidadeDown() {
+                var vValorUnitario = parseFloat($('#valor-unitario').text());
+                if ($('#quantidade').val() > 1) {
                     var vQuantidade = parseInt($('#quantidade').val());
-                    vQuantidade += 1;
+                    vQuantidade -= 1;
                     $('#quantidade').val(vQuantidade);
-                    $('#menos').removeAttr('disabled');
                     $('#total').html((vQuantidade * vValorUnitario).toFixed(2));
-                }
-
-                function quantidadeDown() {
-                    var vValorUnitario = parseFloat($('#valor-unitario').text());
-                    if ($('#quantidade').val() > 1) {
-                        var vQuantidade = parseInt($('#quantidade').val());
-                        vQuantidade -= 1;
-                        $('#quantidade').val(vQuantidade);
-                        $('#total').html((vQuantidade * vValorUnitario).toFixed(2));
-                        if ($('#quantidade').val() == 1) {
-                            $('#menos').attr('disabled', 'disabled');
-                        }
+                    if ($('#quantidade').val() == 1) {
+                        $('#menos').attr('disabled', 'disabled');
                     }
                 }
+            }
 
-                function adicionarProduto() {
+            function adicionarProduto() {
 
-                    var vProdutoId = $('#id').val();
-                    var vValorUnitario = $('#valor-unitario').text();
-                    var vQuantidade = $('#quantidade').val();
-                    var vValorTotal = $('#total').text();
-                    var vObservacao = $('#observacao').val();
+                var vProdutoId = $('#id').val();
+                var vValorUnitario = $('#valor-unitario').text();
+                var vQuantidade = $('#quantidade').val();
+                var vValorTotal = $('#total').text();
+                var vObservacao = $('#observacao').val();
 
-                    db.transaction(function(tx) {
-                        tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1", [], function(tx, results) {
-                            // 1. Verifica se já existe pedido aberto
-                            if (results.rows.length > 0) {
-                                var vPedidoId = results.rows.item(0).Id;
-                                tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
-                                    location.href = 'adicionar-mais-produto.html';
-                                }, errorCallBack);
-                            } else {
-                                tx.executeSql("INSERT INTO Pedido (Status) VALUES ('1')", [], function(tx) {
-                                    tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1", [], function(tx, results) {
-                                        var vPedidoId = results.rows.item(0).Id;
-                                        tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
-                                            location.href = 'adicionar-mais-produto.html';
-                                        }, errorCallBack);
+                db.transaction(function(tx) {
+                    tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1", [], function(tx, results) {
+                        // 1. Verifica se já existe pedido aberto
+                        if (results.rows.length > 0) {
+                            var vPedidoId = results.rows.item(0).Id;
+                            tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
+                                location.href = 'adicionar-mais-produto.html';
+                            }, errorCallBack);
+                        } else {
+                            tx.executeSql("INSERT INTO Pedido (Status) VALUES ('1')", [], function(tx) {
+                                tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1", [], function(tx, results) {
+                                    var vPedidoId = results.rows.item(0).Id;
+                                    tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
+                                        location.href = 'adicionar-mais-produto.html';
                                     }, errorCallBack);
                                 }, errorCallBack);
-                            }
-                        }, errorCallBack);
-                    }, errorCallBack, successCallBack);
-                }
+                            }, errorCallBack);
+                        }
+                    }, errorCallBack);
+                }, errorCallBack, successCallBack);
+            }
 
         </script>
 

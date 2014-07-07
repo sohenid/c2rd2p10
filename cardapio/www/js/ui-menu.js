@@ -1,5 +1,6 @@
 document.write('<div id="menu">');
 document.write('<ul>');
+document.write('<li><a href="#" onclick="callWaiter()"><span class="glyphicon glyphicon-bell"></span> Chamar Garçom</a></li>');
 document.write('<li><a href="categorias.html"><span class="glyphicon glyphicon-th-large"></span> Cardápio</a></li>');
 document.write('<li><a href="carrinho.html"><span class="glyphicon glyphicon-shopping-cart"></span> Carrinho</a></li>');
 document.write('<li><a href="update.html"><span class="glyphicon glyphicon-repeat"></span> Atualizar</a></li>');
