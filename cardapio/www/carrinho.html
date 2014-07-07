@@ -31,92 +31,93 @@
 
         <script type="text/javascript">
 
-                $('#output').css('height', vWindowHeight - 55);
-                
-                document.addEventListener("deviceready", onDeviceReady, false);
-                function onDeviceReady() {
-                    db.transaction(getRecords, errorCallBack, successCallBack);
-                }
+            $('#output').css('height', vWindowHeight - 55);
 
-                function getRecords(tx) {
-                    tx.executeSql("SELECT a.*, (SELECT descricao FROM Produto WHERE Id = a.ProdutoId) as Produto FROM PedidoProduto a WHERE a.PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], showRecords, errorCallBack);
-                }
+            document.addEventListener("deviceready", onDeviceReady, false);
 
-                function showRecords(tx, result) {
-                    var output = document.getElementById("output");
-                    var list = '';
-                    list = list + '<div style="margin-top: 20px">';
-                    list = list + '<a href = "categorias.html" class = "btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Adicionar item</a>';
-                    list = list + '</div>';
-                    if (result.rows.length > 0) {
+            function onDeviceReady() {
+                db.transaction(getRecords, errorCallBack, successCallBack);
+            }
 
-                        list = list + '<table class="table table-condensed" style="width: 100%; margin: 0; margin-top: 20px;">';
+            function getRecords(tx) {
+                tx.executeSql("SELECT a.*, (SELECT descricao FROM Produto WHERE Id = a.ProdutoId) as Produto FROM PedidoProduto a WHERE a.PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], showRecords, errorCallBack);
+            }
+
+            function showRecords(tx, result) {
+                var output = document.getElementById("output");
+                var list = '';
+                list = list + '<div style="margin-top: 20px">';
+                list = list + '<a href = "categorias.html" class = "btn btn-default btn-block"><span class="glyphicon glyphicon-plus"></span> Adicionar item</a>';
+                list = list + '</div>';
+                if (result.rows.length > 0) {
+
+                    list = list + '<table class="table table-condensed" style="width: 100%; margin: 0; margin-top: 20px;">';
+                    list = list + '<tr>';
+                    list = list + '<th colspan="4" style="border-top: none; padding-left:0">Detalhes</th>';
+                    list = list + '</tr>';
+
+                    var vTotal = 0;
+
+                    for (var i = 0; i < result.rows.length; i++) {
                         list = list + '<tr>';
-                        list = list + '<th colspan="4" style="border-top: none; padding-left:0">Detalhes</th>';
-                        list = list + '</tr>';
-
-                        var vTotal = 0;
-
-                        for (var i = 0; i < result.rows.length; i++) {
-                            list = list + '<tr>';
-                            list = list + '<td colspan="3" style="vertical-align: middle; padding-left: 0;">';
-                            list = list + result.rows.item(i).Quantidade + '<br>';
-                            list = list + result.rows.item(i).Produto + '<br>';
-                            list = list + 'R$ ' + result.rows.item(i).ValorTotal;
-                            list = list + '</td>';
-                            list = list + '<td style="vertical-align: middle; text-align: center; width: 1px; padding-right: 0">';
-                            /**/list = list + '<a href="#" class="btn btn-default" onclick="deleteItem(' + result.rows.item(i).Id + ')"><span class="glyphicon glyphicon-trash"></span></a>';
-                            list = list + '</td>';
-                            list = list + '</tr>';
-                            vTotal += parseFloat(result.rows.item(i).ValorTotal);
-                        }
-                        list = list + '<tr>';
-                        list = list + '<td class="text-right" colspan="4" style="vertical-align: middle; padding-right: 0">';
-                        list = list + 'Total <strong class="text-success">R$&nbsp;' + vTotal.toFixed(2) + '</strong>';
+                        list = list + '<td colspan="3" style="vertical-align: middle; padding-left: 0;">';
+                        list = list + result.rows.item(i).Quantidade + '<br>';
+                        list = list + result.rows.item(i).Produto + '<br>';
+                        list = list + 'R$ ' + result.rows.item(i).ValorTotal;
+                        list = list + '</td>';
+                        list = list + '<td style="vertical-align: middle; text-align: center; width: 1px; padding-right: 0">';
+                        /**/list = list + '<a href="#" class="btn btn-default" onclick="deleteItem(' + result.rows.item(i).Id + ')"><span class="glyphicon glyphicon-trash"></span></a>';
                         list = list + '</td>';
                         list = list + '</tr>';
-                        list = list + '</table>';
-                        list = list + '<div style="margin-top: 20px">';
-                        list = list + '<a href="pagamento.html" class="btn btn-success btn-block"><span class="glyphicon glyphicon-chevron-right"></span> Continuar</a>';
-                        list = list + '</div>';
-                        list = list + '<div style="margin-top: 20px; margin-bottom: 20px;">';
-
-                        list = list + '<a href="#" class="btn btn-danger btn-block" onclick="confirmDeletePedido()"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
-                        list = list + '</div>';
-                    } else {
-                        list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
+                        vTotal += parseFloat(result.rows.item(i).ValorTotal);
                     }
-                    output.innerHTML = list;
-                }
+                    list = list + '<tr>';
+                    list = list + '<td class="text-right" colspan="4" style="vertical-align: middle; padding-right: 0">';
+                    list = list + 'Total <strong class="text-success">R$&nbsp;' + vTotal.toFixed(2) + '</strong>';
+                    list = list + '</td>';
+                    list = list + '</tr>';
+                    list = list + '</table>';
+                    list = list + '<div style="margin-top: 20px">';
+                    list = list + '<a href="pagamento.html" class="btn btn-success btn-block"><span class="glyphicon glyphicon-chevron-right"></span> Continuar</a>';
+                    list = list + '</div>';
+                    list = list + '<div style="margin-top: 20px; margin-bottom: 20px;">';
 
-                function deleteItem(pId) {
-                    db.transaction(function(transaction) {
-                        transaction.executeSql("DELETE FROM PedidoProduto WHERE Id = ?", [pId], nullCallBack, errorCallBack);
+                    list = list + '<a href="#" class="btn btn-danger btn-block" onclick="confirmDeletePedido()"><span class="glyphicon glyphicon-ban-circle"></span> Cancelar</a>';
+                    list = list + '</div>';
+                } else {
+                    list = list + '<div class="alert alert-warning" style="margin-top: 20px; margin-bottom: 0; padding: 5px 10px;">Nenhum registro encontrado.</div>';
+                }
+                output.innerHTML = list;
+            }
+
+            function deleteItem(pId) {
+                db.transaction(function(transaction) {
+                    transaction.executeSql("DELETE FROM PedidoProduto WHERE Id = ?", [pId], nullCallBack, errorCallBack);
+                }, errorCallBack, function() {
+                    location.href = 'carrinho.html';
+                });
+            }
+
+            function confirmDeletePedido() {
+                navigator.notification.confirm(
+                        'Tem certeza do cancelamento do pedido?',
+                        deletePedido,
+                        'Atenção!',
+                        ['Não', 'Sim']
+                        );
+            }
+
+            function deletePedido(btn) {
+                if (btn == 2) {
+                    db.transaction(function(tx) {
+                        tx.executeSql("DELETE FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], function(tx) {
+                            tx.executeSql("DELETE FROM Pedido WHERE Status = '1'", [], nullCallBack, errorCallBack);
+                        }, errorCallBack);
                     }, errorCallBack, function() {
                         location.href = 'carrinho.html';
                     });
                 }
-
-                function confirmDeletePedido() {
-                    navigator.notification.confirm(
-                            'Tem certeza do cancelamento do pedido?',
-                            deletePedido,
-                            'Atenção!',
-                            ['Não', 'Sim']
-                            );
-                }
-
-                function deletePedido(btn) {
-                    if (btn == 2) {
-                        db.transaction(function(tx) {
-                            tx.executeSql("DELETE FROM PedidoProduto WHERE PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], function(tx) {
-                                tx.executeSql("DELETE FROM Pedido WHERE Status = '1'", [], nullCallBack, errorCallBack);
-                            }, errorCallBack);
-                        }, errorCallBack, function() {
-                            location.href = 'carrinho.html';
-                        });
-                    }
-                }
+            }
 
         </script>
 

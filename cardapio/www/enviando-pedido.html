@@ -39,7 +39,31 @@
         <script type="text/javascript" src="js/database.js"></script>
         <script type="text/javascript" src="js/functions.js"></script>
         <script type="text/javascript">
-                $('#output').css('height', vWindowHeight - 55);
+
+            $('#output').css('height', vWindowHeight - 55);
+
+            document.addEventListener("deviceready", onDeviceReady, false);
+
+            function onDeviceReady() {
+                db.transaction(getPedidoItens, errorCallBack, successCallBack);
+            }
+
+            function getPedidoItens(tx) {
+                tx.executeSql("SELECT a.*, (SELECT descricao FROM Produto WHERE Id = a.ProdutoId) as Produto FROM PedidoProduto a WHERE a.PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], showPedidoItens, errorCallBack);
+            }
+
+            function showPedidoItens(tx, result) {
+                // 1. Adicionar coluna status na tabela pedidoprodutos
+                // 2. Envia uma tupla por vez
+                // 3. Cada envio bem sucedido, muda o status da tupla para 0
+                // 4. Em caso de falha, mata o processo, e exibe mensagem de erro pedindo pra tantar novamente
+                // 5. Somente as tuplas com status 1 devem ser enviadas
+                // 6. Exibir mensagem de envio bem sucedido
+                for (var i = 0; i < result.rows.length; i++) {
+                    alert(result.rows.item(i).ValorTotal);
+                }
+            }
+
         </script>
 
     </body>
