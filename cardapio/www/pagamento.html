@@ -32,7 +32,7 @@
                     <select id="pagamento" class="form-control">
                         <option value="">Vou pagar com</option>
                         <option value="1">Cartão de Crédito</option>
-                        <option value="2">Cartão de Dédito</option>
+                        <option value="2">Cartão de Débito</option>
                         <option value="3">Dinheiro</option>
                     </select>
                 </div>
@@ -160,7 +160,7 @@
                                 //transaction.executeSql("UPDATE Pedido SET Status = '2', Pagamento = ?, Troco = ? WHERE Status = '1'", [vPagamento, vTroco], nullCallBack, errorCallBack);
                                 transaction.executeSql("UPDATE Pedido SET Pagamento = ?, Troco = ? WHERE Status = '1'", [vPagamento, vTroco], nullCallBack, errorCallBack);
                             }, errorCallBack, function() {
-                                location.href = 'enviando-pedido.html';
+                                location.href = 'envia-pedido.html';
                             });
                         }
 

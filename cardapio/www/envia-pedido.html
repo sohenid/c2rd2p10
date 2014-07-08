@@ -49,18 +49,53 @@
             }
 
             function getPedidoItens(tx) {
-                tx.executeSql("SELECT a.*, (SELECT descricao FROM Produto WHERE Id = a.ProdutoId) as Produto FROM PedidoProduto a WHERE a.PedidoId = (SELECT Id FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1)", [], showPedidoItens, errorCallBack);
+                tx.executeSql("SELECT a.*, (SELECT DeviceId FROM Config WHERE Id = '1') as DeviceId FROM PedidoProduto a WHERE a.Status = '1'", [], showPedidoItens, errorCallBack);
             }
 
             function showPedidoItens(tx, result) {
-                // 1. Adicionar coluna status na tabela pedidoprodutos
+
                 // 2. Envia uma tupla por vez
                 // 3. Cada envio bem sucedido, muda o status da tupla para 0
                 // 4. Em caso de falha, mata o processo, e exibe mensagem de erro pedindo pra tantar novamente
                 // 5. Somente as tuplas com status 1 devem ser enviadas
                 // 6. Exibir mensagem de envio bem sucedido
+
+                var tupla;
+
                 for (var i = 0; i < result.rows.length; i++) {
-                    alert(result.rows.item(i).ValorTotal);
+
+                    tupla = 'DeviceId: ' + result.rows.item(i).DeviceId + '\n';
+                    tupla = tupla + 'PedidoId: ' + result.rows.item(i).PedidoId + '\n';
+                    tupla = tupla + 'ProdutoId: ' + result.rows.item(i).ProdutoId + '\n';
+                    tupla = tupla + 'ValorUnitario: ' + result.rows.item(i).ValorUnitario + '\n';
+                    tupla = tupla + 'Quantidade: ' + result.rows.item(i).Quantidade + '\n';
+                    tupla = tupla + 'ValorTotal: ' + result.rows.item(i).ValorTotal + '\n';
+                    tupla = tupla + 'Observacao: ' + result.rows.item(i).Observacao + '\n';
+                    tupla = tupla + 'Status: ' + result.rows.item(i).Status;
+
+                    alert(tupla);
+
+                    /*$.post(BASE_URL + 'receive/setpedido',
+                     {
+                     // o device_id deve ser configurado na instalação do app
+                     // o cliente deve ter um cadastro no servidor remoto
+                     // quando inicializar o app pela primeira vez, pede o e-mail ou telefone do cliente
+                     // o app envia o e-mail ou o telefone ao servidor, o servidor retorna o id do cliente
+                     // o id retornado será o device_id do celular
+                     device_id: result.rows.item(i).DeviceId,
+                     pedido_id: result.rows.item(i).PedidoId,
+                     produto_id: result.rows.item(i).ProdutoId,
+                     valor_unitario: result.rows.item(i).ValorUnitario,
+                     quantidade: result.rows.item(i).Quantidade,
+                     valor_total: result.rows.item(i).ValorTotal,
+                     observacao: result.rows.item(i).Observacao
+                     },
+                     function(data) {
+                     alert(data);
+                     }).fail(function() {
+                     alert("Não foi possível enviar o pedido! Tente novamente mais tarde.");
+                     });*/
+
                 }
             }
 

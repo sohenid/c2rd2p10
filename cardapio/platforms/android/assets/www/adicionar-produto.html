@@ -168,14 +168,14 @@
                         // 1. Verifica se já existe pedido aberto
                         if (results.rows.length > 0) {
                             var vPedidoId = results.rows.item(0).Id;
-                            tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
+                            tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao, Status) VALUES (?, ?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao, '1'], function() {
                                 location.href = 'adicionar-mais-produto.html';
                             }, errorCallBack);
                         } else {
                             tx.executeSql("INSERT INTO Pedido (Status) VALUES ('1')", [], function(tx) {
                                 tx.executeSql("SELECT * FROM Pedido WHERE Status = '1' ORDER BY Id DESC LIMIT 1", [], function(tx, results) {
                                     var vPedidoId = results.rows.item(0).Id;
-                                    tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao) VALUES (?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao], function() {
+                                    tx.executeSql('INSERT INTO PedidoProduto (PedidoId, ProdutoId, ValorUnitario, Quantidade, ValorTotal, Observacao, Status) VALUES (?, ?, ?, ?, ?, ?, ?)', [vPedidoId, vProdutoId, vValorUnitario, vQuantidade, vValorTotal, vObservacao, '1'], function() {
                                         location.href = 'adicionar-mais-produto.html';
                                     }, errorCallBack);
                                 }, errorCallBack);

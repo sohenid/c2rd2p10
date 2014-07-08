@@ -8,10 +8,9 @@
         <title>App</title>
     </head>
     <body style="background-color: #304859">
-        <a href="categorias.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px">
-            <img src="img/logo.png">
-        </a>
+
         <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/jquery.min.js"></script>
 
         <script type="text/javascript" src="js/functions.js"></script>
         <script type="text/javascript" src="js/database.js"></script>
@@ -26,20 +25,27 @@
             function createTables(tx) {
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Categoria(Id INTEGER NULL, Descricao TEXT NULL, Imagem TEXT NULL, Status TEXT NULL, DataInsert TEXT NULL, DataUpdate TEXT NULL)");
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Produto(Id INTEGER NULL, CategoriaId INTEGER NULL, Descricao TEXT NULL, Preco TEXT NULL, Imagem TEXT NULL, Status TEXT NULL, DataInsert TEXT NULL, DataUpdate TEXT NULL)");
-                tx.executeSql("CREATE TABLE IF NOT EXISTS Config(Id INTEGER NULL, DeviceId Integer NULL)");
+                tx.executeSql("CREATE TABLE IF NOT EXISTS Config(Id INTEGER NULL, DeviceId Integer NULL, DeviceCode TEXT NULL)");
                 tx.executeSql("CREATE TABLE IF NOT EXISTS Pedido (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, Pagamento TEXT NULL, Troco TEXT NULL, Status TEXT NULL)");
                 // status do pedido (0 cancelado, 1 aberto/pendente, 2 enviado/solicitado)
-                tx.executeSql("CREATE TABLE IF NOT EXISTS PedidoProduto (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PedidoId INTEGER NULL, ProdutoId INTEGER NULL, ValorUnitario TEXT NULL, Quantidade TEXT NULL, ValorTotal TEXT NULL, Observacao TEXT NULL)");
+                tx.executeSql("CREATE TABLE IF NOT EXISTS PedidoProduto (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, PedidoId INTEGER NULL, ProdutoId INTEGER NULL, ValorUnitario TEXT NULL, Quantidade TEXT NULL, ValorTotal TEXT NULL, Observacao TEXT NULL, Status TEXT NULL)");
             }
 
             function setTableConfig() {
                 db.transaction(function(transaction) {
-                    transaction.executeSql('SELECT * FROM Config', [], function(transaction, result) {
+                    transaction.executeSql("SELECT * FROM Config WHERE Id = '1'", [], function(transaction, result) {
                         if (result.rows.length == 0) {
-                            transaction.executeSql('INSERT INTO Config(Id, DeviceId) VALUES (?,?)', ["1", "1"], nullCallBack, errorCallBack);
+                            transaction.executeSql('INSERT INTO Config(Id, DeviceId) VALUES (?,?)', ['1', '1'], nullCallBack, errorCallBack);
                         }
+                        alert(result.rows.item(0).DeviceCode);
+                        /*if (result.rows.item(0).DeviceCode != '') {
+                         $('body').append('<a href="categorias.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px"><img src="img/logo.png"></a>');
+                         } else {
+                         $('body').append('<a href="autenticacao.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px"><img src="img/logo.png"></a>');
+                         }*/
                     }, errorCallBack);
                 }, errorCallBack);
+                output.innerHTML = list;
             }
 
         </script>
