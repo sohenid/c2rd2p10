@@ -36,13 +36,14 @@
                     transaction.executeSql("SELECT * FROM Config WHERE Id = '1'", [], function(transaction, result) {
                         if (result.rows.length == 0) {
                             transaction.executeSql('INSERT INTO Config(Id, DeviceId) VALUES (?,?)', ['1', '1'], nullCallBack, errorCallBack);
+                            $('body').append('<a href="autenticacao.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px"><img src="img/logo.png"></a>');
+                        } else {
+                            if (result.rows.item(0).Email != '') {
+                                $('body').append('<a href="categorias.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px"><img src="img/logo.png"></a>');
+                            } else {
+                                $('body').append('<a href="autenticacao.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px"><img src="img/logo.png"></a>');
+                            }
                         }
-                        alert(result.rows.item(0).Email);
-                        /*if (result.rows.item(0).Email != '') {
-                         $('body').append('<a href="categorias.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px"><img src="img/logo.png"></a>');
-                         } else {
-                         $('body').append('<a href="autenticacao.html" style="display: block; width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; margin-top: -100px; margin-left: -100px"><img src="img/logo.png"></a>');
-                         }*/
                     }, errorCallBack);
                 }, errorCallBack);
                 output.innerHTML = list;
